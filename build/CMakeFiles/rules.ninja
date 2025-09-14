@@ -413,6 +413,25 @@ rule C_STATIC_LIBRARY_LINKER__subsys__net__lib__dhcpv4_
 #############################################
 # Rule for compiling C files.
 
+rule C_COMPILER__subsys__net__lib__http_unscanned_
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ccache ${LAUNCHER}${CODE_CHECK}/Users/kiro/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER__subsys__net__lib__http_
+  command = $PRE_LINK && ccache /opt/homebrew/bin/cmake -E rm -f $TARGET_FILE && ccache /Users/kiro/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-ar qc $TARGET_FILE $LINK_FLAGS $in && ccache /Users/kiro/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-ranlib $TARGET_FILE && ccache /opt/homebrew/bin/cmake -E touch $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
 rule C_COMPILER__subsys__zbus_unscanned_
   depfile = $DEP_FILE
   deps = gcc

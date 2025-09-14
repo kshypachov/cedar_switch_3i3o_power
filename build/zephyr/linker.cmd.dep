@@ -78,6 +78,8 @@ linker.cmd: \
  /Users/kiro/zephyrproject/zephyr/include/zephyr/linker/cplusplus-ram.ld \
  /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/include/generated/snippets-data-sections.ld \
  /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/include/generated/snippets-sections.ld \
+ /Users/kiro/zephyrproject/zephyr/include/../../cedar_switch_3i3o_power/sections-rom.ld \
+ /Users/kiro/zephyrproject/zephyr/include/../subsys/net/lib/http/iterables_content_type.ld \
  /Users/kiro/zephyrproject/zephyr/include/zephyr/linker/intlist.ld \
  /Users/kiro/zephyrproject/zephyr/include/zephyr/linker/debug-sections.ld \
  /Users/kiro/zephyrproject/zephyr/include/zephyr/linker/common-noinit.ld \

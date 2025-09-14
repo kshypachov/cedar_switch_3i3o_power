@@ -6,6 +6,8 @@ project(cedar_switch_3in3out_power)
 
 target_sources(app PRIVATE
         src/main.c
+        src/web/http_server_init.c
+        src/mqtt/mqtt.c
 #        src/io.c
 #        src/fs_mount.c
 #        src/nvs_mount.c
@@ -15,9 +17,6 @@ target_sources(app PRIVATE
 #        src/app/rest_api.c
 )
 
-#zephyr_linker_sources(SECTIONS sections-rom.ld.old)
-#zephyr_linker_section(NAME http_resource_desc_my_service
-#        KVMA RAM_REGION GROUP RODATA_REGION)
-#zephyr_linker_section(NAME http_resource_desc_my_service
-#        KVMA RAM_REGION GROUP RODATA_REGION
-#        SUBALIGN ${CONFIG_LINKER_ITERABLE_SUBALIGN})
+zephyr_linker_sources(SECTIONS sections-rom.ld)
+zephyr_linker_section(NAME http_resource_desc_my_service
+        KVMA RAM_REGION GROUP RODATA_REGION)

@@ -1,4 +1,4 @@
-# Install script for directory: /Users/kiro/zephyrproject/zephyr/subsys/net/lib
+# Install script for directory: /Users/kiro/zephyrproject/zephyr/subsys/net/lib/http
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -37,34 +37,9 @@ if(NOT DEFINED CMAKE_OBJDUMP)
   set(CMAKE_OBJDUMP "/Users/kiro/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump")
 endif()
 
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/utils/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/sockets/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/shell/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dhcpv4/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/http/cmake_install.cmake")
-endif()
-
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/install_local_manifest.txt"
+  file(WRITE "/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/http/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

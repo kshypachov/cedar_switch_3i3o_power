@@ -1,0 +1,8 @@
+//
+// Created by Kirill Shypachov on 14.09.2025.
+//
+#include "mqtt.h"
+
+void app_mqtt_ha_client_init(void) {
+
+}

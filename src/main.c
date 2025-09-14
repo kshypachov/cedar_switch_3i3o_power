@@ -19,6 +19,8 @@
 //#include "app/web.h"
 //#include "topics.h"
 //#include "app/home_assistant_mqtt.h"
+#include "web/http_server_init.h"
+#include "mqtt/mqtt.h"
 
 #include <string.h>
 
@@ -63,6 +65,8 @@ static void ipv4_addr_add_handler(struct net_mgmt_event_callback *cb,
 	//k_msleep(SLEEP_TIME_MS * 10);
 	//web_start();
 	//home_assistant_mqtt_start();
+	app_http_server_init();
+	app_mqtt_ha_client_init();
 	if (mgmt_event != NET_EVENT_IPV4_ADDR_ADD) {
 		return;
 	}
