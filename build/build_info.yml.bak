@@ -1,0 +1,6 @@
+west:
+  command: /Users/kiro/zephyrproject/.venv/bin/west build --board=cedar_switch_3in3out_power/stm32f411xe
+    --build-dir=/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build -p always
+    /Users/kiro/zephyrproject/cedar_switch_3i3o_power
+  topdir: /Users/kiro/zephyrproject
+  version: 1.4.0

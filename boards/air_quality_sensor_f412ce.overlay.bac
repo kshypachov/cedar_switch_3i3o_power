@@ -1,0 +1,54 @@
+
+//&spi2 { /* STM32F412CE SPI */
+//// W5500 connected over SPI
+//pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
+//	pinctrl-names = "default";
+//	status = "okay";
+//	cs-gpios = <&gpiob 12 GPIO_ACTIVE_LOW>,  // CS для W5500
+//			   <&gpioa 9 GPIO_ACTIVE_LOW>;  // CS для Flash
+
+//	w5500: w5500@0 {
+//		compatible = "wiznet,w5500";
+//		label = "w5500";
+//		status = "okay";
+//		reg = <0>;
+//		spi-max-frequency = <8000000>;
+//		int-gpios = <&gpioa 2 GPIO_ACTIVE_LOW>;  // PB5
+//		reset-gpios = <&gpioa 10 GPIO_ACTIVE_LOW>; // PA10
+//	};
+//
+//	/* --- SPI NOR Flash MX25R6435F (64 Mbit = 8 MiB) --- */
+//	spi_flash: spi-nor@1 {
+//		compatible = "jedec,spi-nor";
+//		reg = <1>;
+//		spi-max-frequency = <8000000>;
+//		label = "SPI_FLASH";
+//		/* jedec-id и size можно не указывать */
+//	};
+};
+
+/* USB device в режиме peripheral */
+//&usbotg_fs {
+//	status = "okay";
+//};
+
+/* Контроллер USB устройства Zephyr */
+//&zephyr_udc0 {
+//	status = "okay";
+//
+//	/* ← вот этот узел обязателен */
+//	cdc_acm_uart0: cdc_acm_uart0 {
+//		compatible = "zephyr,cdc-acm-uart";
+//		label = "CDC_ACM_0";
+//		status = "okay";
+//	};
+//};
+
+/* Направляем консоль и логгер в CDC-ACM */
+/// {
+//	chosen {
+//		zephyr,console = &cdc_acm_uart0;
+//		zephyr,uart-console = &cdc_acm_uart0;
+//		zephyr,log-console = &cdc_acm_uart0;
+//	};
+//};

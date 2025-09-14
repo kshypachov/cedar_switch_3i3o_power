@@ -1,0 +1,2 @@
+# Load Zephyr board Kconfig descriptions.
+osource "/Users/kiro/zephyrproject/zephyr/boards/arm/cedar_switch_3in3out_power_board/Kconfig"

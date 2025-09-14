@@ -1,0 +1,61 @@
+cmake:
+  application:
+    configuration-dir: '/Users/kiro/zephyrproject/cedar_switch_3i3o_power'
+    source-dir: '/Users/kiro/zephyrproject/cedar_switch_3i3o_power'
+  board:
+    name: 'cedar_switch_3in3out_power'
+    path:
+     - '/Users/kiro/zephyrproject/zephyr/boards/arm/cedar_switch_3in3out_power_board'
+    qualifiers: 'stm32f411xe'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/Users/kiro/zephyrproject/zephyr/dts/bindings'
+    files:
+     - '/Users/kiro/zephyrproject/zephyr/boards/arm/cedar_switch_3in3out_power_board/cedar_switch_3in3out_power.dts'
+     - '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay'
+    include-dirs:
+     - '/Users/kiro/zephyrproject/modules/hal/ambiq/dts'
+     - '/Users/kiro/zephyrproject/modules/hal/atmel/include'
+     - '/Users/kiro/zephyrproject/modules/hal/bouffalolab/include'
+     - '/Users/kiro/zephyrproject/modules/hal/bouffalolab/include/zephyr'
+     - '/Users/kiro/zephyrproject/modules/hal/gigadevice/include'
+     - '/Users/kiro/zephyrproject/modules/hal/microchip/include'
+     - '/Users/kiro/zephyrproject/modules/hal/microchip/dts'
+     - '/Users/kiro/zephyrproject/modules/hal/nuvoton/dts'
+     - '/Users/kiro/zephyrproject/modules/hal/nxp/dts'
+     - '/Users/kiro/zephyrproject/modules/hal/stm32/dts'
+     - '/Users/kiro/zephyrproject/modules/hal/ti/dts'
+     - '/Users/kiro/zephyrproject/zephyr/include'
+     - '/Users/kiro/zephyrproject/zephyr/include/zephyr'
+     - '/Users/kiro/zephyrproject/zephyr/dts/common'
+     - '/Users/kiro/zephyrproject/zephyr/dts/vendor'
+     - '/Users/kiro/zephyrproject/zephyr/dts/rx'
+     - '/Users/kiro/zephyrproject/zephyr/dts/x86'
+     - '/Users/kiro/zephyrproject/zephyr/dts/xtensa'
+     - '/Users/kiro/zephyrproject/zephyr/dts/sparc'
+     - '/Users/kiro/zephyrproject/zephyr/dts/riscv'
+     - '/Users/kiro/zephyrproject/zephyr/dts/posix'
+     - '/Users/kiro/zephyrproject/zephyr/dts/arm64'
+     - '/Users/kiro/zephyrproject/zephyr/dts/arm'
+     - '/Users/kiro/zephyrproject/zephyr/dts/arc'
+     - '/Users/kiro/zephyrproject/zephyr/dts'
+    user-files:
+     - '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay'
+  kconfig:
+    files:
+     - '/Users/kiro/zephyrproject/zephyr/boards/arm/cedar_switch_3in3out_power_board/cedar_switch_3in3out_power_defconfig'
+     - '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/prj.conf'
+    user-files:
+     - '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/prj.conf'
+  toolchain:
+    name: 'zephyr'
+    path: '/Users/kiro/zephyr-sdk-0.17.4'
+  zephyr:
+    version: '4.2.0'
+    zephyr-base: '/Users/kiro/zephyrproject/zephyr'
+version: '0.1.0'
+west:
+  command: '/Users/kiro/zephyrproject/.venv/bin/west build --board=cedar_switch_3in3out_power/stm32f411xe --build-dir=/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build -p always /Users/kiro/zephyrproject/cedar_switch_3i3o_power'
+  topdir: '/Users/kiro/zephyrproject'
+  version: '1.4.0'
