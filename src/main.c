@@ -1,8 +1,9 @@
+#include <string.h>
+#include <zephyr/settings/settings.h>
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/usb/usb_device.h>
 #include <zephyr/device.h>
-// #include <zephyr/logging/log.h>
 #include <zephyr/drivers/flash.h>
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/net_mgmt.h>
@@ -12,6 +13,7 @@
 #include <zephyr/fs/littlefs.h>
 #include <zephyr/storage/flash_map.h>
 #include <zephyr/net/ethernet_mgmt.h>
+#include <zephyr/logging/log.h>
 
 //#include "io.h"
 //#include "fs_mount.h"
@@ -22,9 +24,7 @@
 #include "web/http_server_init.h"
 #include "mqtt/mqtt.h"
 
-#include <string.h>
-
-#include <zephyr/settings/settings.h>
+LOG_MODULE_REGISTER(main_app, LOG_LEVEL_INF);
 
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS   1000
@@ -43,7 +43,6 @@
 #define STORAGE_PARTITION	storage_partition
 #define STORAGE_PARTITION_ID	FIXED_PARTITION_ID(STORAGE_PARTITION)
 
-LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
@@ -106,22 +105,24 @@ int main(void)
 {
 	int ret;
 
+	LOG_INF("Start main app");
+
 	int usb_ret = usb_enable(NULL);
 	if (!gpio_is_ready_dt(&led)) {
-		printk("Error: LED device is not ready\n");
+		LOG_ERR("Error: LED device is not ready\n");
 		return;
 	}
 
 	ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
-		printk("Error %d: failed to configure LED\n", ret);
+		LOG_ERR("Error %d: failed to configure LED\n", ret);
 		return;
 	}
 
 	const struct device *flash = DEVICE_DT_GET(FLASH_NODE);
 
 	if (!device_is_ready(flash)) {
-		// LOG_ERR("SPI_FLASH not ready (probe failed or disabled)");
+		LOG_ERR("SPI_FLASH not ready (probe failed or disabled)");
 		return;
 	}
 
@@ -139,26 +140,26 @@ int main(void)
 		return;
 	}
 
-	// struct flash_pages_info info;
-	// if (flash_get_page_info_by_offs(flash_dev, 0, &info) == 0) {
-	// 	size_t page_size = info.size;
-	// 	size_t page_count = flash_get_page_count(flash_dev);
-	// 	size_t total_size = page_size * page_count;
-	//
-	// 	printk("Flash total size: %u bytes (%u KiB)\n",
-	// 		   (unsigned int)total_size,
-	// 		   (unsigned int)(total_size / 1024));
-	// 	printk("Page size: %u bytes\n", (unsigned int)page_size);
-	// 	printk("Page count: %u\n", (unsigned int)page_count);
-	// } else {
-	// 	printk("Failed to get flash info\n");
-	// }
-	//
-	// const struct flash_parameters *params = flash_get_parameters(flash_dev);
-	// if (params) {
-	// 	printk("Erase value: 0x%02x\n", params->erase_value);
-	// 	printk("Write block size: %u\n", params->write_block_size);
-	// }
+	struct flash_pages_info info;
+	if (flash_get_page_info_by_offs(flash_dev, 0, &info) == 0) {
+		size_t page_size = info.size;
+		size_t page_count = flash_get_page_count(flash_dev);
+		size_t total_size = page_size * page_count;
+
+		printk("Flash total size: %u bytes (%u KiB)\n",
+			   (unsigned int)total_size,
+			   (unsigned int)(total_size / 1024));
+		printk("Page size: %u bytes\n", (unsigned int)page_size);
+		printk("Page count: %u\n", (unsigned int)page_count);
+	} else {
+		printk("Failed to get flash info\n");
+	}
+
+	const struct flash_parameters *params = flash_get_parameters(flash_dev);
+	if (params) {
+		printk("Erase value: 0x%02x\n", params->erase_value);
+		printk("Write block size: %u\n", params->write_block_size);
+	}
 
 	/* Подписка на событие получения IPv4 адреса */
 	net_mgmt_init_event_callback(&cb, ipv4_addr_add_handler, NET_EVENT_IPV4_ADDR_ADD);
@@ -172,15 +173,18 @@ int main(void)
 	//fs_subsystem();
 	//nvs_service_init();
 	//web_start();
-	//settings_subsys_init();
-	//settings_load();
+	settings_subsys_init();
+	settings_load();
 
-	//settings_save_one("app/mode", "test", sizeof("test")+1);
+	// int rc = settings_save_one("app/mode", "test", sizeof("test")+1);
+	// if (rc < 0) {
+	// 	LOG_ERR("Error %d: failed to save settings\n", rc);
+	// }
 
 	if (iface) {
 		net_if_up(iface); /* DHCP стартует автоматически при CONFIG_NET_DHCPV4=y */
 		(void)net_dhcpv4_start(iface);    // ЯВНО запустить DHCP
-		//LOG_INF("Network interface up");
+		LOG_INF("Network interface up");
 
 	}
 
