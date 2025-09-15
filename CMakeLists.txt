@@ -7,6 +7,9 @@ project(cedar_switch_3in3out_power)
 target_sources(app PRIVATE
         src/main.c
         src/zbus_topics.c
+        src/web/http_common.c
+        src/web/REST_endpoints/settings_status.c
+        src/web/REST_endpoints/default_relay_state.c
         src/web/http_server_init.c
         src/mqtt/mqtt.c
         src/littlefs/littlefs_mount.c

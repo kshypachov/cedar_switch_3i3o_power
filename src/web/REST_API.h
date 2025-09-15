@@ -1,8 +1,0 @@
-//
-// Created by Kirill Shypachov on 15.09.2025.
-//
-
-#ifndef CEDAR_SWITCH_3IN3OUT_POWER_REST_API_H
-#define CEDAR_SWITCH_3IN3OUT_POWER_REST_API_H
-
-#endif //CEDAR_SWITCH_3IN3OUT_POWER_REST_API_H
