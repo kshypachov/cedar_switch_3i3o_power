@@ -21,8 +21,10 @@
 //#include "app/web.h"
 //#include "topics.h"
 //#include "app/home_assistant_mqtt.h"
+#include "io/io.h"
 #include "web/http_server_init.h"
 #include "mqtt/mqtt.h"
+#include "littlefs/littlefs_mount.h"
 
 LOG_MODULE_REGISTER(main_app, LOG_LEVEL_INF);
 
@@ -140,20 +142,20 @@ int main(void)
 		return;
 	}
 
-	struct flash_pages_info info;
-	if (flash_get_page_info_by_offs(flash_dev, 0, &info) == 0) {
-		size_t page_size = info.size;
-		size_t page_count = flash_get_page_count(flash_dev);
-		size_t total_size = page_size * page_count;
-
-		printk("Flash total size: %u bytes (%u KiB)\n",
-			   (unsigned int)total_size,
-			   (unsigned int)(total_size / 1024));
-		printk("Page size: %u bytes\n", (unsigned int)page_size);
-		printk("Page count: %u\n", (unsigned int)page_count);
-	} else {
-		printk("Failed to get flash info\n");
-	}
+	// struct flash_pages_info info;
+	// if (flash_get_page_info_by_offs(flash_dev, 0, &info) == 0) {
+	// 	size_t page_size = info.size;
+	// 	size_t page_count = flash_get_page_count(flash_dev);
+	// 	size_t total_size = page_size * page_count;
+	//
+	// 	printk("Flash total size: %u bytes (%u KiB)\n",
+	// 		   (unsigned int)total_size,
+	// 		   (unsigned int)(total_size / 1024));
+	// 	printk("Page size: %u bytes\n", (unsigned int)page_size);
+	// 	printk("Page count: %u\n", (unsigned int)page_count);
+	// } else {
+	// 	printk("Failed to get flash info\n");
+	// }
 
 	const struct flash_parameters *params = flash_get_parameters(flash_dev);
 	if (params) {
@@ -170,16 +172,11 @@ int main(void)
 	uint8_t mac[6];
 	make_mac_from_uid(mac);
 
-	//fs_subsystem();
-	//nvs_service_init();
-	//web_start();
-	settings_subsys_init();
-	settings_load();
+	(void)settings_subsys_init();
+	(void)settings_load();
+	(void)fs_service_init();
+	io_init();
 
-	// int rc = settings_save_one("app/mode", "test", sizeof("test")+1);
-	// if (rc < 0) {
-	// 	LOG_ERR("Error %d: failed to save settings\n", rc);
-	// }
 
 	if (iface) {
 		net_if_up(iface); /* DHCP стартует автоматически при CONFIG_NET_DHCPV4=y */
@@ -187,8 +184,6 @@ int main(void)
 		LOG_INF("Network interface up");
 
 	}
-
-	//io_start();
 
 	while (1) {
 		ret = gpio_pin_toggle_dt(&led);
