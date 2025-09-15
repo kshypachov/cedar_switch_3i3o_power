@@ -6,11 +6,11 @@ project(cedar_switch_3in3out_power)
 
 target_sources(app PRIVATE
         src/main.c
+        src/zbus_topics.c
         src/web/http_server_init.c
         src/mqtt/mqtt.c
         src/littlefs/littlefs_mount.c
         src/io/io.c
-        src/zbus_topics.c
 #        src/io.c
 #        src/fs_mount.c
 #        src/nvs_mount.c

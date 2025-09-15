@@ -24,7 +24,7 @@ ZBUS_CHAN_DEFINE(inputs_zbus_topik,            /* имя канала */
                  ZBUS_MSG_INIT(0, 0));     /* начальное значение */
 
 // Канал zbus с состоянием MQTT
-ZBUS_CHAN_DEFINE(mqtt_status_zbus_topik,            /* имя канала */
+ZBUS_CHAN_DEFINE(mqtt_stat_zbus_topik,            /* имя канала */
                  struct mqtt_status_msg,       /* тип сообщения */
                  NULL, NULL,               /* callback до/после публикации (можно NULL) */
                  ZBUS_OBSERVERS_EMPTY,     /* список наблюдателей */

@@ -10,7 +10,11 @@
 
 #define outputs_zbus_topik outputs_topic
 #define inputs_zbus_topik inputs_topic
-#define mqtt_status_zbus_topik mqtt_status_topic
+#define mqtt_stat_zbus_topik mqtt_status_topic
+
+ZBUS_CHAN_DECLARE(outputs_zbus_topik);
+ZBUS_CHAN_DECLARE(inputs_zbus_topik);
+ZBUS_CHAN_DECLARE(mqtt_stat_zbus_topik);
 
 //structure for relay state exchange
 struct outputs_msg {

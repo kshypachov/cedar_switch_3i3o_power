@@ -10,8 +10,10 @@
 #include <zephyr/sys/printk.h>
 #include <zephyr/sys/__assert.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/settings/settings.h>
 #include <string.h>
 #include "../zbus_topics.h"
+#include "../settings_topics.h"
 
 LOG_MODULE_REGISTER(io, LOG_LEVEL_INF);
 
@@ -22,7 +24,9 @@ LOG_MODULE_REGISTER(io, LOG_LEVEL_INF);
 K_THREAD_STACK_DEFINE(io_task_stack, IO_TASK_STACK_SIZE);
 static struct k_thread io_task_thread_data;
 
-ZBUS_CHAN_DECLARE(outputs_topic);
+relays_def_state relays_default_state;
+
+
 
 /* ====== DT relays (gpio-leds children) ====== */
 static const struct gpio_dt_spec relay1 = GPIO_DT_SPEC_GET(DT_NODELABEL(relay1), gpios);
@@ -52,23 +56,76 @@ void io_task(void *a, void *b, void *c) {
     (void)gpio_pin_configure_dt(&relay3, GPIO_OUTPUT_INACTIVE);
 
     uint8_t applied_state = 0x00; /* force first apply */
+    write_relays_once(applied_state);
+
+    struct mqtt_status_msg mqtt_status_msg = {
+        false
+    };
+    settings_load_one(mqtt_enabled_settings, &mqtt_status_msg.enabled, sizeof(mqtt_status_msg.enabled));
 
 
     while (1) {
         struct outputs_msg msg;
         if (zbus_chan_read(&outputs_zbus_topik, &msg, K_NO_WAIT) == 0) {
-            if (msg.state != applied_state) {
-                applied_state = msg.state;
-                write_relays_once(applied_state);
+            // if mqtt function is desabled, of function of default relay state is disabled - not follow for mqtt connection
+            if ((mqtt_status_msg.enabled == false) || (relays_default_state.enabled == false)){
+                if (msg.state != applied_state) {
+                    applied_state = msg.state;
+                    write_relays_once(applied_state);
+                }
+            }else{
+                // if mqtt_status_msg.enabled == true and relays_default_state.enabled == true
+                // its mean mqtt function is enabled and we set default relay state if mqtt connection lost
+                // read mqtt conection status
+                zbus_chan_read(&mqtt_stat_zbus_topik, &mqtt_status_msg, K_NO_WAIT);
+                // if mqtt connection is lost - set default relay state
+                if (mqtt_status_msg.connected == false) {
+                    msg.state = (uint8_t)(relays_default_state.relay1  << 0) |
+                                (relays_default_state.relay2 ? 1 : 0 ) << 1 |
+                                (relays_default_state.relay3 ? 1 : 0) << 2;
+                    if (msg.state != applied_state) {
+                        applied_state = msg.state;
+                        write_relays_once(applied_state);
+                    }
+                // if mqtt connection is established - set relays state from mqtt
+                }else {
+                    if (msg.state != applied_state) {
+                        applied_state = msg.state;
+                        write_relays_once(applied_state);
+                    }
+                }
             }
         }
-    k_sleep(K_MSEC(100));
+    k_sleep(K_MSEC(250));
     }
 
 }
 
 
 void io_init(void) {
+    LOG_INF("Start io init");
+
+    if ( 0 > settings_load_one(def_relays_state_enable_settings_topik, &relays_default_state.enabled, sizeof(relays_default_state.enabled))) {
+        LOG_ERR("Failed to load topik %s init default", def_relays_state_enable_settings_topik);
+        relays_default_state.enabled = false;
+        settings_save_one(def_relays_state_enable_settings_topik, &relays_default_state.enabled, sizeof(relays_default_state.enabled));
+    }
+    if ( 0 > settings_load_one(def_relays1_state_settings_topik, &relays_default_state.relay1, sizeof(relays_default_state.relay1))) {
+        LOG_ERR("Failed to load topik %s init default", def_relays1_state_settings_topik);
+        relays_default_state.relay1 = false;
+        settings_save_one(def_relays1_state_settings_topik, &relays_default_state.relay1, sizeof(relays_default_state.relay1));
+    }
+    if ( 0 > settings_load_one(def_relays2_state_settings_topik, &relays_default_state.relay2, sizeof(relays_default_state.relay2))) {
+        LOG_ERR("Failed to load topik %s init default", def_relays2_state_settings_topik);
+        relays_default_state.relay2 = false;
+        settings_save_one(def_relays2_state_settings_topik, &relays_default_state.relay2, sizeof(relays_default_state.relay2));
+    }
+    if ( 0 > settings_load_one(def_relays3_state_settings_topik, &relays_default_state.relay3, sizeof(relays_default_state.relay3))) {
+        LOG_ERR("Failed to load topik %s init default", def_relays3_state_settings_topik);
+        relays_default_state.relay3 = false;
+        settings_save_one(def_relays3_state_settings_topik, &relays_default_state.relay3, sizeof(relays_default_state.relay3));
+    }
+
 
     k_tid_t tid = k_thread_create(&io_task_thread_data,
                               io_task_stack,
