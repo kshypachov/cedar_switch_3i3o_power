@@ -15,7 +15,7 @@
 #include "../zbus_topics.h"
 #include "../settings_topics.h"
 
-LOG_MODULE_REGISTER(io, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(io);
 
 /* Стек для нового потока */
 #define IO_TASK_STACK_SIZE 2048

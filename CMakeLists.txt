@@ -10,6 +10,9 @@ target_sources(app PRIVATE
         src/web/http_common.c
         src/web/REST_endpoints/settings_status.c
         src/web/REST_endpoints/default_relay_state.c
+        src/web/REST_endpoints/mqtt_settings.c
+        src/web/REST_endpoints/relays_state.c
+        src/web/static_resources.c
         src/web/http_server_init.c
         src/mqtt/mqtt.c
         src/littlefs/littlefs_mount.c
@@ -24,5 +27,11 @@ target_sources(app PRIVATE
 )
 
 zephyr_linker_sources(SECTIONS sections-rom.ld)
-zephyr_linker_section(NAME http_resource_desc_my_service
+#zephyr_linker_section(NAME http_resource_desc_my_service
+#        KVMA RAM_REGION GROUP RODATA_REGION)
+
+zephyr_linker_section(NAME http_resource_desc_http_static_service
+        KVMA RAM_REGION GROUP RODATA_REGION)
+
+zephyr_linker_section(NAME http_resource_desc_http_api_service
         KVMA RAM_REGION GROUP RODATA_REGION)

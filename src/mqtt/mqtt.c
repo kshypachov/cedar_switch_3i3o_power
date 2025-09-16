@@ -5,7 +5,7 @@
 #include "../zbus_topics.h"
 #include <zephyr/logging/log.h>
 
-LOG_MODULE_REGISTER(mqtt, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(mqtt);
 
 void app_mqtt_ha_client_init(void) {
 

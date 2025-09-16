@@ -4,6 +4,7 @@
 
 #include "http_common.h"
 
+
 static int updated = 0;
 
 void http_settings_status_set_updated(void) {

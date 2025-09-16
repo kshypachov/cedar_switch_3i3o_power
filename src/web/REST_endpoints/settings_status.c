@@ -9,7 +9,7 @@
 #include <zephyr/logging/log.h>
 #include "../http_common.h"
 
-LOG_MODULE_REGISTER(REST_API_settings_status, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(REST_API_settings_status);
 
 
 /* Буфер под JSON */
@@ -29,9 +29,9 @@ static int settings_handler_get(struct http_client_ctx *client,
 
     if (status == HTTP_SERVER_DATA_FINAL) {
         if (http_settings_status_get()) {
-            sprintf(resp_buf, "{\"changed\": true}");
+            sprintf(resp_buf, "{\"reboot_required\": true}");
         }else {
-            sprintf(resp_buf, "{\"changed\": false}");
+            sprintf(resp_buf, "{\"reboot_required\": false}");
         }
         response_ctx->body = (uint8_t *)resp_buf;
         response_ctx->body_len = strlen(resp_buf);
@@ -54,6 +54,6 @@ static struct http_resource_detail_dynamic settings_resource_detail_get = {
 
 /* === Register path for HTTP service only === */
 HTTP_RESOURCE_DEFINE(api_settings_status_get,
-                     my_service,
-                     "/api/settings",
+                     http_api_service,
+                     "/api/system/reboot_required",
                      &settings_resource_detail_get);

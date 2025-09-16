@@ -13,14 +13,10 @@
 #include "../http_common.h"
 #include "../../settings_topics.h"
 
-LOG_MODULE_REGISTER(REST_API_default_relay_state, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(REST_API_default_relay_state);
 
 
-
-
-
-
-void app_settings_def_relay_state_update(relays_def_state state) {
+static void app_settings_def_relay_state_update(relays_def_state state) {
     int err = 0;
     settings_save_one(def_relays_state_enable_settings_topik, &state.enabled, sizeof(state.enabled));
     settings_save_one(def_relays1_state_settings_topik, &state.relay1, sizeof(state.relay1));
@@ -32,14 +28,10 @@ void app_settings_def_relay_state_update(relays_def_state state) {
  * Используем *_NAMED, чтобы сопоставить имена ключей JSON с именами полей структуры.
  */
 static const struct json_obj_descr relays_def_state_descr[] = {
-    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "enabled",
-                              enabled, JSON_TOK_TRUE),
-    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "relay1",
-                              relay1, JSON_TOK_TRUE),
-    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "relay2",
-                              relay2, JSON_TOK_TRUE),
-    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "relay3",
-                              relay3, JSON_TOK_TRUE),
+    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "enabled", enabled, JSON_TOK_TRUE),
+    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "relay1", relay1, JSON_TOK_TRUE),
+    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "relay2", relay2, JSON_TOK_TRUE),
+    JSON_OBJ_DESCR_PRIM_NAMED(relays_def_state, "relay3", relay3, JSON_TOK_TRUE),
 };
 
 static int settings_def_relay_state_handler(struct http_client_ctx *client,
@@ -48,7 +40,7 @@ static int settings_def_relay_state_handler(struct http_client_ctx *client,
                             struct http_response_ctx *response_ctx,
                             void *user_data) {
 
-    ARG_UNUSED(request_ctx);
+    //ARG_UNUSED(request_ctx);
     ARG_UNUSED(user_data);
 
     static char resp_buf[256] = "\0";
@@ -149,9 +141,9 @@ static int settings_def_relay_state_handler(struct http_client_ctx *client,
             return -1;
         }
 
-        response_ctx->body = (uint8_t *)resp_buf;
-        response_ctx->body_len = strlen(resp_buf);
-        response_ctx->final_chunk = true;
+    response_ctx->body = (uint8_t *)resp_buf;
+    response_ctx->body_len = strlen(resp_buf);
+    response_ctx->final_chunk = true;
     //}
     return 0;
 }
@@ -169,6 +161,6 @@ static struct http_resource_detail_dynamic settings_def_relay_state = {
 
 /* === Register path for HTTP service only === */
 HTTP_RESOURCE_DEFINE(api_def_relay_state,
-                     my_service,
-                     "/api/def_relay_state",
+                     http_api_service,
+                     "/api/relays/safe_state",
                      &settings_def_relay_state);

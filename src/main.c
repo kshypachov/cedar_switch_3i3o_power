@@ -15,6 +15,9 @@
 #include <zephyr/net/ethernet_mgmt.h>
 #include <zephyr/logging/log.h>
 
+#include <zephyr/logging/log_backend_mqtt.h>
+
+
 //#include "io.h"
 //#include "fs_mount.h"
 //#include "nvs_mount.h"
@@ -44,6 +47,11 @@ LOG_MODULE_REGISTER(main_app, LOG_LEVEL_INF);
 
 #define STORAGE_PARTITION	storage_partition
 #define STORAGE_PARTITION_ID	FIXED_PARTITION_ID(STORAGE_PARTITION)
+
+/* Получаем numeric ID разделов из DTS по алиасам узлов fixed-partitions */
+#define LFS_PART_ID  FIXED_PARTITION_ID(storage_lfs_partition)
+#define NVS_PART_ID  FIXED_PARTITION_ID(storage_nvs_partition)
+
 
 
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
@@ -101,7 +109,33 @@ static void make_mac_from_uid(uint8_t mac[6])
 	mac[5] = (uint8_t)(h);
 }
 
+/* Универсальная функция стирания раздела целиком */
+static int erase_partition_by_id(uint8_t part_id)
+{
+	const struct flash_area *fa;
+	int rc = flash_area_open(part_id, &fa);
+	if (rc) {
+		LOG_ERR("flash_area_open(%u) failed: %d", part_id, rc);
+		return rc;
+	}
 
+	LOG_INF("Erasing partition id=%u, offset=0x%lx, size=0x%lx",
+			(unsigned)part_id, (unsigned long)fa->fa_off, (unsigned long)fa->fa_size);
+
+	/* Важно: перед стиранием убедитесь, что ФС на этом разделе размонтирована,
+	   и никакие задачи его не используют. */
+
+	rc = flash_area_erase(fa, 0, fa->fa_size);  /* стираем ВСЮ область */
+	flash_area_close(fa);
+
+	if (rc) {
+		LOG_ERR("flash_area_erase failed: %d", rc);
+		return rc;
+	}
+
+	LOG_INF("Erase OK");
+	return 0;
+}
 
 int main(void)
 {
@@ -141,6 +175,9 @@ int main(void)
 		printk("Flash device not ready\n");
 		return;
 	}
+
+	//(void)erase_partition_by_id(LFS_PART_ID);
+	//(void)erase_partition_by_id(NVS_PART_ID);
 
 	// struct flash_pages_info info;
 	// if (flash_get_page_info_by_offs(flash_dev, 0, &info) == 0) {
