@@ -62,6 +62,7 @@ static int webui_chunk_put(struct http_client_ctx *client,
     static char abs_path[256];
     static char post_request_buff [CHUNK_BUF_CAP] = "\0";
     static char post_response_buff [CHUNK_BUF_CAP] = "\0";
+    int rc;
 
     static size_t cursor;
 
@@ -161,8 +162,8 @@ static int webui_chunk_put(struct http_client_ctx *client,
             }
 
             struct fs_dirent fs_file_stat;
-            fs_stat(abs_path, &fs_file_stat);
-            if (fs_file_stat.type != FS_DIR_ENTRY_FILE) {
+            rc = fs_stat(abs_path, &fs_file_stat);
+            if ((fs_file_stat.type != FS_DIR_ENTRY_FILE) && (rc >=0)) {
                 response_ctx->status = HTTP_400_BAD_REQUEST;
                 static  char err[256];
                 snprintf(err, sizeof(err), "{\"error\":\"%s is not a file, it's dir\"}", file);
@@ -188,7 +189,7 @@ static int webui_chunk_put(struct http_client_ctx *client,
 
             struct fs_file_t fd;
             fs_file_t_init(&fd);
-            int rc = fs_open(&fd, abs_path, FS_O_CREATE | FS_O_WRITE | FS_O_APPEND);
+            rc = fs_open(&fd, abs_path, FS_O_CREATE | FS_O_WRITE | FS_O_APPEND);
 
             if (rc < 0) {
                 response_ctx->status = HTTP_400_BAD_REQUEST;
@@ -245,4 +246,4 @@ static struct http_resource_detail_dynamic webui_put_detail = {
     .cb = webui_chunk_put,
 };
 HTTP_RESOURCE_DEFINE(webui_put_resource, http_api_service,
-                     "/api/webui/files", &webui_put_detail);
+                     "/api/webui/upload", &webui_put_detail);
