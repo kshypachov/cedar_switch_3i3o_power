@@ -159,7 +159,6 @@ static struct http_resource_detail_dynamic relays_state = {
     .user_data = NULL,
 };
 
-
 /* === Register path for HTTP service only === */
 HTTP_RESOURCE_DEFINE(api_relays_state,
                      http_api_service,

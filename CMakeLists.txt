@@ -6,17 +6,24 @@ project(cedar_switch_3in3out_power)
 
 target_sources(app PRIVATE
         src/main.c
+        src/test_functions.c # to delete
+        src/littlefs/filesystem_helpers.c
         src/zbus_topics.c
         src/web/http_common.c
         src/web/REST_endpoints/settings_status.c
         src/web/REST_endpoints/default_relay_state.c
         src/web/REST_endpoints/mqtt_settings.c
         src/web/REST_endpoints/relays_state.c
+        src/web/REST_endpoints/system_reboot.c
+        src/web/REST_endpoints/webui_delete.c
+        src/web/REST_endpoints/webui_mkdir.c
+        src/web/REST_endpoints/webui_upload.c
         src/web/static_resources.c
         src/web/http_server_init.c
         src/mqtt/mqtt.c
         src/littlefs/littlefs_mount.c
         src/io/io.c
+        src/mqtt/mqtt.c
 #        src/io.c
 #        src/fs_mount.c
 #        src/nvs_mount.c
@@ -27,8 +34,6 @@ target_sources(app PRIVATE
 )
 
 zephyr_linker_sources(SECTIONS sections-rom.ld)
-#zephyr_linker_section(NAME http_resource_desc_my_service
-#        KVMA RAM_REGION GROUP RODATA_REGION)
 
 zephyr_linker_section(NAME http_resource_desc_http_static_service
         KVMA RAM_REGION GROUP RODATA_REGION)

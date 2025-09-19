@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "zephyr/subsys/net/l2/ethernet",
+		"source" : "/Users/kiro/zephyrproject/zephyr/subsys/net/l2/ethernet"
+	}
+}

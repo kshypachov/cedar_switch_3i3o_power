@@ -9,16 +9,17 @@
 #include <zephyr/data/json.h>
 #include <string.h>
 #include <zephyr/logging/log.h>
+#include "../global_var.h"
 
 LOG_MODULE_REGISTER(static_resources);
 
 
-struct http_resource_detail_static_fs static_fs_resource_detail = {
+static struct http_resource_detail_static_fs static_fs_resource_detail = {
     .common = {
         .type                              = HTTP_RESOURCE_TYPE_STATIC_FS,
         .bitmask_of_supported_http_methods = BIT(HTTP_GET),
     },
-    .fs_path = "/lfs/www",
+    .fs_path = base_web_ui_fs_path,
 };
 
 HTTP_RESOURCE_DEFINE(static_fs_resource, http_static_service, "*", &static_fs_resource_detail);

@@ -2069,7 +2069,7 @@ status = "okay";
    lookahead-size = <32>;
    block-cycles = <4096>;
    partition = <&storage_lfs_partition>;
-   mount-point = "/lfs1";
+   mount-point = "/lfs";
   };
  };
  gpio_keys {

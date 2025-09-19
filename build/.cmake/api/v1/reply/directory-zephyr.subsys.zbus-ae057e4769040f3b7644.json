@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "zephyr/subsys/zbus",
+		"source" : "/Users/kiro/zephyrproject/zephyr/subsys/zbus"
+	}
+}

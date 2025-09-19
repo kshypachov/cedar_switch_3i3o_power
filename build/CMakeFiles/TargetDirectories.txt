@@ -176,6 +176,8 @@
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/CMakeFiles/rebuild_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/utils/CMakeFiles/edit_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/utils/CMakeFiles/rebuild_cache.dir
+/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/sntp/CMakeFiles/edit_cache.dir
+/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/sntp/CMakeFiles/rebuild_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/sockets/CMakeFiles/edit_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/sockets/CMakeFiles/rebuild_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/shell/CMakeFiles/edit_cache.dir
@@ -183,6 +185,9 @@
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dhcpv4/CMakeFiles/subsys__net__lib__dhcpv4.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dhcpv4/CMakeFiles/edit_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dhcpv4/CMakeFiles/rebuild_cache.dir
+/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dns/CMakeFiles/subsys__net__lib__dns.dir
+/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dns/CMakeFiles/edit_cache.dir
+/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/dns/CMakeFiles/rebuild_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/http/CMakeFiles/subsys__net__lib__http.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/http/CMakeFiles/edit_cache.dir
 /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/subsys/net/lib/http/CMakeFiles/rebuild_cache.dir

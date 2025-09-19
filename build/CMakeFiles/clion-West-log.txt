@@ -1,0 +1,45 @@
+west build --cmake-only --board=cedar_switch_3in3out_power/stm32f411xe --build-dir=/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build /Users/kiro/zephyrproject/cedar_switch_3i3o_power -- -DCMAKE_MAKE_PROGRAM=/Users/kiro/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja
+-- west build: generating a build system
+Loading Zephyr default modules (Zephyr base (cached)).
+-- Application: /Users/kiro/zephyrproject/cedar_switch_3i3o_power
+-- CMake version: 4.1.1
+-- Cache files will be written to: /Users/kiro/Library/Caches/zephyr
+-- Zephyr version: 4.2.0 (/Users/kiro/zephyrproject/zephyr)
+-- Found west (found suitable version "1.4.0", minimum required is "0.14.0")
+-- Board: cedar_switch_3in3out_power, qualifiers: stm32f411xe
+-- Found host-tools: zephyr 0.17.4 (/Users/kiro/zephyr-sdk-0.17.4)
+-- Found toolchain: zephyr 0.17.4 (/Users/kiro/zephyr-sdk-0.17.4)
+-- Found BOARD.dts: /Users/kiro/zephyrproject/zephyr/boards/arm/cedar_switch_3in3out_power_board/cedar_switch_3in3out_power.dts
+-- Found devicetree overlay: /Users/kiro/zephyrproject/cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay
+-- Generated zephyr.dts: /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/zephyr.dts
+-- Generated pickled edt: /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /Users/kiro/zephyrproject/zephyr/Kconfig
+Loaded configuration '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/.config'
+No change to configuration in '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/.config'
+No change to Kconfig header in '/Users/kiro/zephyrproject/cedar_switch_3i3o_power/build/zephyr/include/generated/zephyr/autoconf.h'
+CMake Warning at /Users/kiro/zephyrproject/zephyr/subsys/random/CMakeLists.txt:12 (message):
+
+
+      Warning: CONFIG_TIMER_RANDOM_GENERATOR and CONFIG_TEST_CSPRNG_GENERATOR are
+      not truly random generators. This capability is not secure and it is
+      provided for testing purposes only. Use it carefully.
+
+
+-- Using ccache: /opt/homebrew/bin/ccache
+-- Found gen_kobject_list: /Users/kiro/zephyrproject/zephyr/scripts/build/gen_kobject_list.py
+CMake Warning at /Users/kiro/zephyrproject/zephyr/CMakeLists.txt:1028 (message):
+  No SOURCES given to Zephyr library: drivers__console
+
+  Excluding target from build.
+
+
+CMake Warning at /Users/kiro/zephyrproject/zephyr/CMakeLists.txt:1028 (message):
+  No SOURCES given to Zephyr library: drivers__entropy
+
+  Excluding target from build.
+
+
+-- Configuring done (4.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /Users/kiro/zephyrproject/cedar_switch_3i3o_power/build

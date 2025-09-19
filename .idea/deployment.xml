@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="TR2_200 (bcabf52c-1e6e-4b31-993b-a2440767f3b6)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../zephyr" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/crypto/tinycrypt" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/bsim_hw_models/nrf_hw_models" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/lib/open-amp" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/lib/picolibc" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/lib/libmctp/zephyr" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/fs/littlefs" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/debug/mipi-sys-t" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/libmetal" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/telink" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/cmsis_6" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/ambiq" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/adi" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/openisa" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/st" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/cmsis" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/microchip" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/stm32" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/xtensa" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/ti" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/tdk" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/atmel" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/intel/zephyr" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/nxp/zephyr/src" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/wurthelektronik" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/quicklogic" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/espressif/zephyr" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/nuvoton" web="/" />
+            <mapping local="$PROJECT_DIR$/../modules/hal/renesas" web="/" />
+            <mapping local="$PROJECT_DIR$/../bootloader/mcuboot/boot/bootutil/zephyr" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

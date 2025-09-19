@@ -1,0 +1,6 @@
+board:
+  name: cedar_switch_3in3out_power
+  full_name: Cedar Switch 3in3out Power
+  vendor: st
+  socs:
+    - name: stm32f411xe

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "zephyr/drivers/ethernet/nxp_imx_netc",
+		"source" : "/Users/kiro/zephyrproject/zephyr/drivers/ethernet/nxp_imx_netc"
+	}
+}

@@ -1099,7 +1099,7 @@
 			lookahead-size = < 0x20 >;              /* in cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay:122 */
 			block-cycles = < 0x1000 >;              /* in cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay:123 */
 			partition = < &storage_lfs_partition >; /* in cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay:124 */
-			mount-point = "/lfs1";                  /* in cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay:125 */
+			mount-point = "/lfs";                   /* in cedar_switch_3i3o_power/boards/cedar_switch_3in3out_power.overlay:125 */
 		};
 	};
 

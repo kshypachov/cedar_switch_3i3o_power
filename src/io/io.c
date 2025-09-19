@@ -98,9 +98,7 @@ void io_task(void *a, void *b, void *c) {
         }
     k_sleep(K_MSEC(250));
     }
-
 }
-
 
 void io_init(void) {
     LOG_INF("Start io init");
@@ -126,7 +124,6 @@ void io_init(void) {
         settings_save_one(def_relays3_state_settings_topik, &relays_default_state.relay3, sizeof(relays_default_state.relay3));
     }
 
-
     k_tid_t tid = k_thread_create(&io_task_thread_data,
                               io_task_stack,
                               K_THREAD_STACK_SIZEOF(io_task_stack),
@@ -137,6 +134,4 @@ void io_init(void) {
                               K_NO_WAIT);
 
     k_thread_name_set(tid, "io_task");
-
-
 }

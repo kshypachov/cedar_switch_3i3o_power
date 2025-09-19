@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "zephyr/subsys/settings/src",
+		"source" : "/Users/kiro/zephyrproject/zephyr/subsys/settings/src"
+	}
+}

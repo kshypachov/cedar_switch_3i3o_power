@@ -1413,7 +1413,7 @@ set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|prog-
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|cache-size" "256")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|lookahead-size" "32")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|block-cycles" "4096")
-set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|mount-point" "/lfs1")
+set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|mount-point" "/lfs")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|automount" "False")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|read-only" "False")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/fstab/lfs1|no-format" "False")

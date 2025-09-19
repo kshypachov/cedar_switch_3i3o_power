@@ -5179,11 +5179,11 @@
 #define DT_N_S_fstab_S_lfs1_P_lookahead_size_EXISTS 1
 #define DT_N_S_fstab_S_lfs1_P_block_cycles 4096
 #define DT_N_S_fstab_S_lfs1_P_block_cycles_EXISTS 1
-#define DT_N_S_fstab_S_lfs1_P_mount_point "/lfs1"
-#define DT_N_S_fstab_S_lfs1_P_mount_point_STRING_UNQUOTED /lfs1
-#define DT_N_S_fstab_S_lfs1_P_mount_point_STRING_TOKEN _lfs1
-#define DT_N_S_fstab_S_lfs1_P_mount_point_STRING_UPPER_TOKEN _LFS1
-#define DT_N_S_fstab_S_lfs1_P_mount_point_IDX_0 "/lfs1"
+#define DT_N_S_fstab_S_lfs1_P_mount_point "/lfs"
+#define DT_N_S_fstab_S_lfs1_P_mount_point_STRING_UNQUOTED /lfs
+#define DT_N_S_fstab_S_lfs1_P_mount_point_STRING_TOKEN _lfs
+#define DT_N_S_fstab_S_lfs1_P_mount_point_STRING_UPPER_TOKEN _LFS
+#define DT_N_S_fstab_S_lfs1_P_mount_point_IDX_0 "/lfs"
 #define DT_N_S_fstab_S_lfs1_P_mount_point_IDX_0_EXISTS 1
 #define DT_N_S_fstab_S_lfs1_P_mount_point_FOREACH_PROP_ELEM(fn) fn(DT_N_S_fstab_S_lfs1, mount_point, 0)
 #define DT_N_S_fstab_S_lfs1_P_mount_point_FOREACH_PROP_ELEM_SEP(fn, sep) fn(DT_N_S_fstab_S_lfs1, mount_point, 0)

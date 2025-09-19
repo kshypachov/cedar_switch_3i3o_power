@@ -14,20 +14,20 @@
 #include <zephyr/storage/flash_map.h>
 #include <zephyr/net/ethernet_mgmt.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/version.h>
 
-#include <zephyr/logging/log_backend_mqtt.h>
-
-
-//#include "io.h"
-//#include "fs_mount.h"
-//#include "nvs_mount.h"
-//#include "app/web.h"
-//#include "topics.h"
-//#include "app/home_assistant_mqtt.h"
-#include "io/io.h"
 #include "web/http_server_init.h"
 #include "mqtt/mqtt.h"
+#include "io/io.h"
 #include "littlefs/littlefs_mount.h"
+
+
+#include <zephyr/logging/log_backend.h>
+#include <zephyr/logging/log_backend_net.h>
+#include <zephyr/logging/log_ctrl.h>
+
+#include "test_functions.h"
+
 
 LOG_MODULE_REGISTER(main_app, LOG_LEVEL_INF);
 
@@ -74,8 +74,26 @@ static void ipv4_addr_add_handler(struct net_mgmt_event_callback *cb,
 	//k_msleep(SLEEP_TIME_MS * 10);
 	//web_start();
 	//home_assistant_mqtt_start();
+
+	const struct log_backend *backend = log_backend_net_get();
+	if (!log_backend_is_active(backend)) {
+
+		/* Specifying an address by calling this function will
+		 * override the value given to LOG_BACKEND_NET_SERVER.
+		   It can also be called at any other time after the backend
+		   is started. The net context will be released and
+		   restarted with the newly specified address.
+		 */
+		log_backend_net_set_addr("192.168.88.182:514");
+		log_backend_init(backend);
+		log_backend_enable(backend, backend->cb->ctx, LOG_LEVEL_DBG);
+		log_backend_net_start();
+	}
+
 	app_http_server_init();
-	app_mqtt_ha_client_init();
+	//app_mqtt_ha_client_init();
+
+
 	if (mgmt_event != NET_EVENT_IPV4_ADDR_ADD) {
 		return;
 	}
@@ -219,8 +237,21 @@ int main(void)
 		net_if_up(iface); /* DHCP стартует автоматически при CONFIG_NET_DHCPV4=y */
 		(void)net_dhcpv4_start(iface);    // ЯВНО запустить DHCP
 		LOG_INF("Network interface up");
-
 	}
+
+
+
+	int answ = 0;
+	answ = fs_mkdir("/lfs/test1");
+	answ = fs_mkdir("/lfs/test1/test2");
+	answ = fs_mkdir("/lfs/test1/test2/test3");
+	//fs_delete_tree("/lfs/test1");
+
+	fs_mkdir("/lfs/www");
+
+	create_index_html();
+
+	LOG_INF("answ = %d", answ);
 
 	while (1) {
 		ret = gpio_pin_toggle_dt(&led);

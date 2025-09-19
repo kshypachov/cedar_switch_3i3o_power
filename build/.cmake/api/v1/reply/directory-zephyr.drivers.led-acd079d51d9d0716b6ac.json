@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "zephyr/drivers/led",
+		"source" : "/Users/kiro/zephyrproject/zephyr/drivers/led"
+	}
+}

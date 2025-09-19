@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "modules/adi",
+		"source" : "/Users/kiro/zephyrproject/modules/hal/adi"
+	}
+}

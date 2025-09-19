@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "modules/tinycrypt",
+		"source" : "/Users/kiro/zephyrproject/modules/crypto/tinycrypt"
+	}
+}

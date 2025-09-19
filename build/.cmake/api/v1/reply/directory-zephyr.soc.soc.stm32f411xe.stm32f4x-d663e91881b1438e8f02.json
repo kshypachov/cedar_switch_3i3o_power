@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "zephyr/soc/soc/stm32f411xe/stm32f4x",
+		"source" : "/Users/kiro/zephyrproject/zephyr/soc/st/stm32/stm32f4x"
+	}
+}
