@@ -20,7 +20,7 @@ target_sources(app PRIVATE
         src/web/REST_endpoints/webui_upload.c
         src/web/static_resources.c
         src/web/http_server_init.c
-        src/mqtt/mqtt.c
+        src/mqtt/mqtt_ha.c
         src/mqtt/mqtt_callback.c
         src/mqtt/mqtt_helpers.c
         src/littlefs/littlefs_mount.c
