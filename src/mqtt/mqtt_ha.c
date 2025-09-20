@@ -1,17 +1,22 @@
 //
 // Created by Kirill Shypachov on 14.09.2025.
 //
-#include "mqtt.h"
+#include "mqtt_ha.h"
 #include "../zbus_topics.h"
 #include <zephyr/logging/log.h>
 #include <zephyr/net/socket.h>
 #include <zephyr/net/socket_service.h>
+#include <zephyr/settings/settings.h>
 #include <zephyr/net/sntp.h>
+#include <zephyr/kernel.h>
+#include <zephyr/zbus/zbus.h>
 #include <arpa/inet.h>
 #include <zephyr/net/mqtt.h>
 #include "../settings_topics.h"
-#include <zephyr/settings/settings.h>
+
 #include "mqtt_callback.h"
+
+#define MQTT_TASK_PRIORITY 0
 
 LOG_MODULE_REGISTER(mqtt);
 
@@ -153,51 +158,78 @@ static void mqtt_task(void *a, void *b, void *c) {
 
     while (1) {
         /* Get SNTP server */
-        rv = dns_query("pool.ntp.org", 8883, family, SOCK_DGRAM, &addr, &addrlen);
+        rv = dns_query("test.mosquitto.org", 1883, family, SOCK_DGRAM, &addr, &addrlen);
         if (rv != 0) {
             LOG_ERR("Failed to lookup %s MQTT server (%d)", family_str, rv);
+            LOG_ERR("DNS query failed (%d)", rv);
+            LOG_ERR("Waiting 10s and retry");
         }else {
-
         	client_init(&client_ctx, &addr);
-
             LOG_INF("MQTT server: %s", inet_ntoa(net_sin(&addr)->sin_addr));
-
         	int rc = mqtt_connect(&client_ctx);
-        	if (rc != 0) {
-        		LOG_INF("mqtt_connect", rc);
-        		k_sleep(K_SECONDS(1));
 
-        	} else {
-        		while (1) {
-        			k_sleep(K_SECONDS(1));
+        	if (rc != 0) {
+        		LOG_ERR("MQTT conection fail, err: ", rc);
+        	    LOG_ERR("Wait 10s and retry");
+        		k_sleep(K_SECONDS(10));
+        		continue;
+        	}
+            LOG_INF("MQTT connected ");
+
+            mqtt_status_msg_t mqtt_conn_status = {
+                0,
+                true,
+                true
+            };
+            zbus_chan_pub(&mqtt_stat_zbus_topik, &mqtt_conn_status, K_NO_WAIT);
+        	while (1) {
+
+        		rc = mqtt_input(&client_ctx);
+        		if (rc != 0 && rc != -EAGAIN) {
+        			LOG_ERR("mqtt_input rc=%d", rc);
+        			break;
         		}
+
+        		rc = mqtt_live(&client_ctx);
+        		if (rc != 0 && rc != -EAGAIN) {
+        			LOG_ERR("mqtt_live rc=%d", rc);
+        			break;
+        		}
+        	    zbus_chan_read(&mqtt_stat_zbus_topik, &mqtt_conn_status,K_NO_WAIT);
+        	    if (!mqtt_conn_status.connected)
+        	    {
+        	        LOG_INF("MQTT disconnected. Read from zbus chan");
+        	        break;
+        	    }
+
+        		k_sleep(K_MSEC(100)); /* 10 Гц: достаточно, чтобы не пропускать keepalive и события */
         	}
 
         }
-        k_sleep(K_SECONDS(1));
+        k_sleep(K_SECONDS(10));
     }
-
+	return 0;
 }
 
 void app_mqtt_ha_client_init(void) {
 
-    settings_load_one(mqtt_enabled_settings, &mqtt_sett.enabled, sizeof(mqtt_sett.enabled));
-    settings_load_one(mqtt_host_settings, mqtt_sett.host, sizeof(mqtt_sett.host));
 	settings_load_one(mqtt_port_settings, &mqtt_sett.port, sizeof(mqtt_sett.port));
-    settings_load_one(mqtt_user_settings, mqtt_sett.user, sizeof(mqtt_sett.user));
-    settings_load_one(mqtt_pass_settings, mqtt_sett.pass, sizeof(mqtt_sett.enabled));
+	settings_load_one(mqtt_enabled_settings, &mqtt_sett.enabled, sizeof(mqtt_sett.enabled));
+	settings_load_one(mqtt_host_settings, mqtt_sett.host, sizeof(mqtt_sett.host));
+	settings_load_one(mqtt_user_settings, mqtt_sett.user, sizeof(mqtt_sett.user));
+	settings_load_one(mqtt_pass_settings, mqtt_sett.pass, sizeof(mqtt_sett.enabled));
 
-    if (mqtt_sett.enabled) {
+	if (mqtt_sett.enabled) {
 
-        k_tid_t tid = k_thread_create(&mqtt_task_thread_data,
-                                  mqtt_task_stack,
-                                  K_THREAD_STACK_SIZEOF(mqtt_task_stack),
-                                  mqtt_task,
-                                  NULL, NULL, NULL,
-                                  4,
-                                  0,
-                                  K_NO_WAIT);
+		k_tid_t tid = k_thread_create(&mqtt_task_thread_data,
+		                          mqtt_task_stack,
+		                          K_THREAD_STACK_SIZEOF(mqtt_task_stack),
+		                          mqtt_task,
+		                          NULL, NULL, NULL,
+		                          MQTT_TASK_PRIORITY,
+		                          0,
+		                          K_NO_WAIT);
 
-        k_thread_name_set(tid, "mqtt_task");
-    }
+		k_thread_name_set(tid, "mqtt_task_ha");
+	}
 }
