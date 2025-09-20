@@ -15,7 +15,7 @@
 
 LOG_MODULE_REGISTER(REST_API_mqtt_settings);
 
-static void app_settings_mqtt_update(mqtt_settings mqtt) {
+static void app_settings_mqtt_update(mqtt_settings_t mqtt) {
     settings_save_one(mqtt_enabled_settings, &mqtt.enabled, sizeof(mqtt.enabled));
     settings_save_one(mqtt_host_settings, mqtt.host, sizeof(mqtt.host));
     settings_save_one(mqtt_user_settings, mqtt.user, sizeof(mqtt.user));
@@ -23,7 +23,7 @@ static void app_settings_mqtt_update(mqtt_settings mqtt) {
 }
 
 /* Load all fields (defaults to zeroed if not present) */
-static void app_settings_mqtt_load(mqtt_settings *mqtt) {
+static void app_settings_mqtt_load(mqtt_settings_t *mqtt) {
     memset(mqtt, 0, sizeof(*mqtt));
     settings_load_one(mqtt_enabled_settings, &mqtt->enabled, sizeof(mqtt->enabled));
     settings_load_one(mqtt_host_settings,   mqtt->host, sizeof(mqtt->host));
@@ -32,10 +32,10 @@ static void app_settings_mqtt_load(mqtt_settings *mqtt) {
 }
 
 static const struct json_obj_descr mqtt_settings_descr[] = {
-    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings, "enabled", enabled, JSON_TOK_TRUE),
-    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings, "host", host, JSON_TOK_STRING_BUF),
-    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings, "user", user, JSON_TOK_STRING_BUF),
-    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings, "pass", pass, JSON_TOK_STRING_BUF),
+    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "enabled", enabled, JSON_TOK_TRUE),
+    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "host", host, JSON_TOK_STRING_BUF),
+    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "user", user, JSON_TOK_STRING_BUF),
+    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "pass", pass, JSON_TOK_STRING_BUF),
 };
 
 static int settings_mqtt_handler(struct http_client_ctx *client,
@@ -49,7 +49,7 @@ static int settings_mqtt_handler(struct http_client_ctx *client,
     static char resp_buf[256] = "\0";
     static char post_request_buff [256] = "\0";
     static size_t cursor;
-    mqtt_settings mqtt_sett = {0};
+    mqtt_settings_t mqtt_sett = {0};
 
     if (client->method == HTTP_GET) {
         if (status == HTTP_SERVER_DATA_FINAL) {
@@ -109,7 +109,7 @@ static int settings_mqtt_handler(struct http_client_ctx *client,
         if (status == HTTP_SERVER_DATA_FINAL) {
 
             http_settings_status_set_updated();
-            mqtt_settings tmp = {0};
+            mqtt_settings_t tmp = {0};
             const int expected = BIT_MASK(ARRAY_SIZE(mqtt_settings_descr));
             int ret = json_obj_parse(post_request_buff, cursor, mqtt_settings_descr, ARRAY_SIZE(mqtt_settings_descr), &tmp);
 

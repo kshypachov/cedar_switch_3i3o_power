@@ -21,9 +21,10 @@ target_sources(app PRIVATE
         src/web/static_resources.c
         src/web/http_server_init.c
         src/mqtt/mqtt.c
+        src/mqtt/mqtt_callback.c
+        src/mqtt/mqtt_helpers.c
         src/littlefs/littlefs_mount.c
         src/io/io.c
-        src/mqtt/mqtt.c
 #        src/io.c
 #        src/fs_mount.c
 #        src/nvs_mount.c

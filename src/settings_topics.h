@@ -21,15 +21,17 @@ typedef struct  {
 
 #define mqtt_enabled_settings "/settings/mqtt/enabled"
 #define mqtt_host_settings    "/settings/mqtt/host"
+#define mqtt_port_settings    "/settings/mqtt/port"
 #define mqtt_user_settings    "/settings/mqtt/user"
 #define mqtt_pass_settings    "/settings/mqtt/pass"
 
 typedef struct {
     bool enabled;
     char host[128];
+    uint16_t port;
     char user[128];
     char pass[128];
-} mqtt_settings;
+} mqtt_settings_t;
 
 
 #endif //CEDAR_SWITCH_3IN3OUT_POWER_SETTINGS_TOPICS_H
