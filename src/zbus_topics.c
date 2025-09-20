@@ -11,21 +11,21 @@
 
 // Канал zbus с состоянием выходов
 ZBUS_CHAN_DEFINE(outputs_zbus_topik,            /* имя канала */
-                 struct outputs_msg,       /* тип сообщения */
+                 outputs_msg_t,       /* тип сообщения */
                  NULL, NULL,               /* callback до/после публикации (можно NULL) */
                  ZBUS_OBSERVERS_EMPTY,     /* список наблюдателей */
                  ZBUS_MSG_INIT(0, 0));     /* начальное значение */
 
 // Канал zbus с состоянием входов
 ZBUS_CHAN_DEFINE(inputs_zbus_topik,            /* имя канала */
-                 struct outputs_msg,       /* тип сообщения */
+                 outputs_msg_t,       /* тип сообщения */
                  NULL, NULL,               /* callback до/после публикации (можно NULL) */
                  ZBUS_OBSERVERS_EMPTY,     /* список наблюдателей */
                  ZBUS_MSG_INIT(0, 0));     /* начальное значение */
 
 // Канал zbus с состоянием MQTT
 ZBUS_CHAN_DEFINE(mqtt_stat_zbus_topik,            /* имя канала */
-                 struct mqtt_status_msg,       /* тип сообщения */
+                 mqtt_status_msg_t,       /* тип сообщения */
                  NULL, NULL,               /* callback до/после публикации (можно NULL) */
                  ZBUS_OBSERVERS_EMPTY,     /* список наблюдателей */
                  ZBUS_MSG_INIT(

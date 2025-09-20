@@ -17,20 +17,20 @@ ZBUS_CHAN_DECLARE(inputs_zbus_topik);
 ZBUS_CHAN_DECLARE(mqtt_stat_zbus_topik);
 
 //structure for relay state exchange
-struct outputs_msg {
+typedef struct {
     uint32_t seq;   /* уникальный номер или счётчик сообщения */
     uint8_t state;  /* биты реле */
-};
+} outputs_msg_t;
 
-struct inputs_msg {
+typedef struct {
     uint32_t seq;  /**/
     uint8_t state;  /**/
-};
+} inputs_msg_t;
 
-struct mqtt_status_msg {
+typedef struct  {
     uint32_t seq;
     bool enabled;
     bool connected;
-};
+}mqtt_status_msg_t;
 
 #endif //CEDAR_SWITCH_3IN3OUT_POWER_ZBUS_TOPICS_H
