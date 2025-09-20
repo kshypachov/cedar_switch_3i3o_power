@@ -24,7 +24,7 @@ typedef struct {
 
 void relays_state_update(relays_state_t state) {
 
-    struct outputs_msg relays_state = {0};
+    outputs_msg_t relays_state = {0};
     zbus_chan_read(&outputs_zbus_topik, &relays_state, K_NO_WAIT);
     relays_state.seq++;
     relays_state.state = state.relay1 << 0 | state.relay2 << 1 | state.relay3 << 2;
@@ -34,7 +34,7 @@ void relays_state_update(relays_state_t state) {
 
 int relays_state_get(void) {
 
-    struct outputs_msg relays_state = {0};
+    outputs_msg_t relays_state = {0};
     zbus_chan_read(&outputs_zbus_topik, &relays_state, K_NO_WAIT);
     return relays_state.state;
 }
