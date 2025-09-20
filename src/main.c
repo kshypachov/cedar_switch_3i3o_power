@@ -17,7 +17,7 @@
 #include <zephyr/version.h>
 
 #include "web/http_server_init.h"
-#include "mqtt/mqtt.h"
+#include "mqtt/mqtt_ha.h"
 #include "io/io.h"
 #include "littlefs/littlefs_mount.h"
 
@@ -91,7 +91,7 @@ static void ipv4_addr_add_handler(struct net_mgmt_event_callback *cb,
 	}
 
 	app_http_server_init();
-	//app_mqtt_ha_client_init();
+	app_mqtt_ha_client_init();
 
 
 	if (mgmt_event != NET_EVENT_IPV4_ADDR_ADD) {
