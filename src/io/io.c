@@ -19,7 +19,7 @@ LOG_MODULE_REGISTER(io);
 
 /* Стек для нового потока */
 #define IO_TASK_STACK_SIZE 2048
-#define IO_TASK_PRIORITY   5
+#define IO_TASK_PRIORITY   2
 
 K_THREAD_STACK_DEFINE(io_task_stack, IO_TASK_STACK_SIZE);
 static struct k_thread io_task_thread_data;
@@ -58,14 +58,14 @@ void io_task(void *a, void *b, void *c) {
     uint8_t applied_state = 0x00; /* force first apply */
     write_relays_once(applied_state);
 
-    struct mqtt_status_msg mqtt_status_msg = {
+    mqtt_status_msg_t mqtt_status_msg = {
         false
     };
     settings_load_one(mqtt_enabled_settings, &mqtt_status_msg.enabled, sizeof(mqtt_status_msg.enabled));
 
 
     while (1) {
-        struct outputs_msg msg;
+        outputs_msg_t msg;
         if (zbus_chan_read(&outputs_zbus_topik, &msg, K_NO_WAIT) == 0) {
             // if mqtt function is desabled, of function of default relay state is disabled - not follow for mqtt connection
             if ((mqtt_status_msg.enabled == false) || (relays_default_state.enabled == false)){
