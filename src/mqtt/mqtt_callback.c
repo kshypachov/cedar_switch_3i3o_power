@@ -4,6 +4,8 @@
 
 #include "mqtt_callback.h"
 #include <zephyr/logging/log.h>
+#include <zephyr/kernel.h>
+#include <zephyr/zbus/zbus.h>
 
 LOG_MODULE_REGISTER(mqtt_callback);
 
@@ -12,6 +14,8 @@ void mqtt_evt_handler(struct mqtt_client *const client,
 {
     int err;
     static bool connected = false;
+
+	LOG_DBG("mqtt_evt_handler");
 
     switch (evt->type) {
         case MQTT_EVT_CONNACK:
@@ -101,3 +105,5 @@ void mqtt_evt_handler(struct mqtt_client *const client,
             break;
     }
 }
+
+

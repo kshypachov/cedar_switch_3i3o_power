@@ -12,6 +12,7 @@
 #include <zephyr/zbus/zbus.h>
 #include <arpa/inet.h>
 #include <zephyr/net/mqtt.h>
+#include <zephyr/random/random.h>
 #include "../settings_topics.h"
 
 #include "mqtt_callback.h"
@@ -155,6 +156,10 @@ static void mqtt_task(void *a, void *b, void *c) {
     socklen_t addrlen;
     int rv;
 
+    #define PUB_PERIOD_MS 5000
+
+    static uint64_t next_pub_ms;
+
 
     while (1) {
         /* Get SNTP server */
@@ -200,6 +205,42 @@ static void mqtt_task(void *a, void *b, void *c) {
         	    {
         	        LOG_INF("MQTT disconnected. Read from zbus chan");
         	        break;
+        	    }
+
+
+
+
+        	    /* простая периодика без drift’а: next += period */
+        	    int64_t now = k_uptime_get();
+        	    if (mqtt_conn_status.connected && now >= next_pub_ms) {
+        	        const char *payload = "hello";
+        	        struct mqtt_publish_param pub;
+
+                    pub.message.topic.topic.utf8 = (uint8_t*)"zephyr/kshypachov";
+        	        pub.message.topic.topic.size = strlen("zephyr/kshypachov");
+        	        pub.message.topic.qos = MQTT_QOS_0_AT_MOST_ONCE;
+        	        pub.message.payload.data = (uint8_t*)"OK";
+        	        pub.message.payload.len = strlen("OK");
+        	        pub.message_id = sys_rand16_get();
+        	        pub.dup_flag = false;
+        	        pub.retain_flag = false;
+
+
+
+        	        int pub_rc = mqtt_publish(&client_ctx, &pub);
+        	        if (pub_rc != 0)
+        	        {
+        	            LOG_ERR("MQTT publish rc=%d", pub_rc);
+        	        }else
+        	        {
+        	            LOG_INF("MQTT publish success rc=%d", pub_rc);
+        	        }
+        	        /* без накопления дрейфа: добавляем фиксированный период */
+        	        next_pub_ms += PUB_PERIOD_MS;
+        	        /* если отстали (долго обрабатывали), догоняем ближайший дедлайн */
+        	        if (now - next_pub_ms > PUB_PERIOD_MS) {
+        	            next_pub_ms = now + PUB_PERIOD_MS;
+        	        }
         	    }
 
         		k_sleep(K_MSEC(100)); /* 10 Гц: достаточно, чтобы не пропускать keepalive и события */
