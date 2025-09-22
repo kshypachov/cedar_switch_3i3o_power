@@ -28,7 +28,7 @@ typedef struct {
 } inputs_msg_t;
 
 typedef struct  {
-    uint32_t seq;
+    uint64_t seq;
     bool enabled;
     bool connected;
 }mqtt_status_msg_t;
