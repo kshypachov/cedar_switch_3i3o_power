@@ -19,7 +19,7 @@
 
 #define MQTT_TASK_PRIORITY 0
 
-LOG_MODULE_REGISTER(mqtt);
+LOG_MODULE_REGISTER(mqtt_ha);
 
 K_THREAD_STACK_DEFINE(mqtt_task_stack, 2048);
 static struct k_thread mqtt_task_thread_data;
@@ -37,7 +37,7 @@ static struct sockaddr_storage broker;
 static uint8_t rx_buffer[APP_MQTT_BUFFER_SIZE];
 static uint8_t tx_buffer[APP_MQTT_BUFFER_SIZE];
 
-#define MQTT_CLIENTID		"zephyr_publisher"
+#define MQTT_CLIENTID		"zephyr_publisher1323123"
 
 
 
@@ -213,12 +213,12 @@ static void mqtt_task(void *a, void *b, void *c) {
         	    /* простая периодика без drift’а: next += period */
         	    int64_t now = k_uptime_get();
         	    if (mqtt_conn_status.connected && now >= next_pub_ms) {
-        	        const char *payload = "hello";
+
         	        struct mqtt_publish_param pub;
 
                     pub.message.topic.topic.utf8 = (uint8_t*)"zephyr/kshypachov";
         	        pub.message.topic.topic.size = strlen("zephyr/kshypachov");
-        	        pub.message.topic.qos = MQTT_QOS_0_AT_MOST_ONCE;
+        	        pub.message.topic.qos = MQTT_QOS_2_EXACTLY_ONCE;
         	        pub.message.payload.data = (uint8_t*)"OK";
         	        pub.message.payload.len = strlen("OK");
         	        pub.message_id = sys_rand16_get();
