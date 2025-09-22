@@ -7,4 +7,6 @@
 
 #define base_web_ui_fs_path "/lfs/www"
 
+#define MQTT_UNIC_IDENTIFIER_LENGTH 16
+
 #endif //CEDAR_SWITCH_3IN3OUT_POWER_GLOBAL_VAR_H
