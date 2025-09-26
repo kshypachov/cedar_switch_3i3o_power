@@ -1,0 +1,17 @@
+identifier: cedar_switch_3in3out_power_rev2
+name: Kshypachov Cedar Switch 3in3out Power
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+ram: 256
+flash: 512
+supported:
+  - pwm
+  - i2c
+  - spi
+  - gpio
+  - usb_device
+  - counter
+vendor: st

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="com.intellij.dts.settings.DtsSettings">
-    <option name="zephyrBoard" value="$PROJECT_DIR$/../zephyr/boards/arm/cedar_switch_3in3out_power_board" />
+    <option name="zephyrBoard" value="$PROJECT_DIR$/../zephyr/boards/arm/cedar_switch_3in3out_power_rev2" />
     <option name="zephyrRoot" value="$PROJECT_DIR$/../zephyr" />
   </component>
 </project>

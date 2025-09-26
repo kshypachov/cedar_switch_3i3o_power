@@ -5,6 +5,7 @@
   </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="WestSettings"><![CDATA[{
-  "boardName": "cedar_switch_3in3out_power/stm32f411xe"
+  "boardName": "cedar_switch_3in3out_power_rev2/stm32f412cx",
+  "buildOptions": "-p always"
 }]]></component>
 </project>

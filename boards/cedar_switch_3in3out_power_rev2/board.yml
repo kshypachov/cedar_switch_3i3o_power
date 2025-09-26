@@ -1,0 +1,6 @@
+board:
+  name: cedar_switch_3in3out_power_rev2
+  full_name: STM32F412G cedar_switch_3in3out_power_rev2
+  vendor: st
+  socs:
+    - name: stm32f412cx

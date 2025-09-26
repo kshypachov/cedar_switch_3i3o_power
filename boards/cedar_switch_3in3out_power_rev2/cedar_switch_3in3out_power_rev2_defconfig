@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: Apache-2.0
+
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+# Enable HW stack protection
+CONFIG_HW_STACK_PROTECTION=y
+
+##CONFIG_SERIAL=y
+
+# console
+##CONFIG_CONSOLE=y
+##CONFIG_UART_CONSOLE=y
+
+# enable GPIO ports A, B, C, D, E
+CONFIG_GPIO=y
+
+##CONFIG_MBEDTLS=y
+##CONFIG_MBEDTLS_BUILTIN=y           # использовать встроенный mbedTLS из Zephyr
+##CONFIG_MBEDTLS_TLS_VERSION_1_2=y   # TLS 1.2 (на Cortex-M4 это реалистично)
+
+# Базовые крипто-алгоритмы (минимум для ECDHE/ECDSA и/или PSK)
+##CONFIG_MBEDTLS_ECP_C=y
+##CONFIG_MBEDTLS_ECDH_C=y
+##CONFIG_MBEDTLS_ECDSA_C=y
+##CONFIG_MBEDTLS_ENTROPY_C=y
+
+# Управление кучей mbedTLS (вариант через Zephyr heap)
+##CONFIG_MBEDTLS_ENABLE_HEAP=y
+ # подбери под себя, см. раздел "Память"
+##CONFIG_MBEDTLS_HEAP_SIZE=32768
+# Уменьшение рекорд-баффера TLS (экономит RAM, но ограничивает размер фрейма)
+##CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN=4096
+
+##CONFIG_TEST_RANDOM_GENERATOR=y
+
+##CONFIG_MBEDTLS_KEY_EXCHANGE_PSK_ENABLED=y
+
+# KEX: только PSK (никакого ECC)
+##CONFIG_MBEDTLS_KEY_EXCHANGE_PSK_ENABLED=y
+##CONFIG_MBEDTLS_ECDSA_C=n
+##CONFIG_MBEDTLS_ECDH_C=n
+##CONFIG_MBEDTLS_ECP_C=n
+
+# Криптопримитивы (минимум)
+##CONFIG_MBEDTLS_ENTROPY_C=y
+

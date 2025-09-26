@@ -1,0 +1,5 @@
+# Copyright (c) 2017 Powersoft
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_CEDAR_SWITCH_3IN3OUT_POWER_REV2
+	select SOC_STM32F412CX
