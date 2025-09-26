@@ -1,7 +1,7 @@
 //
 // Created by Kirill Shypachov on 14.09.2025.
 //
-#include "mqtt_ha.h"
+#include "ha_mqtt.h"
 #include "../zbus_topics.h"
 #include <zephyr/logging/log.h>
 #include <zephyr/net/socket.h>
@@ -13,33 +13,32 @@
 #include <arpa/inet.h>
 #include <zephyr/net/mqtt.h>
 #include <zephyr/random/random.h>
+
+#include "ha_mqtt_adapter.h"
 #include "../settings_topics.h"
 
-#include "mqtt_callback.h"
+#include "ha_mqtt_callback.h"
+#include "ha_task.h"
 
-#define MQTT_TASK_PRIORITY 0
+#define MQTT_TASK_PRIORITY 4
 
 LOG_MODULE_REGISTER(mqtt_ha);
 
-K_THREAD_STACK_DEFINE(mqtt_task_stack, 2048);
+K_THREAD_STACK_DEFINE(mqtt_task_stack, 8192);
 static struct k_thread mqtt_task_thread_data;
 
 mqtt_settings_t mqtt_sett = {0};
+struct mqtt_utf8 username;
+struct mqtt_utf8 password;
+
 /* The mqtt client struct */
 static struct mqtt_client client_ctx;
 
-/* MQTT Broker details. */
-static struct sockaddr_storage broker;
-
-#define APP_MQTT_BUFFER_SIZE	1024
+#define APP_MQTT_BUFFER_SIZE	2048
 
 /* Buffers for MQTT client. */
 static uint8_t rx_buffer[APP_MQTT_BUFFER_SIZE];
 static uint8_t tx_buffer[APP_MQTT_BUFFER_SIZE];
-
-#define MQTT_CLIENTID		"zephyr_publisher1323123"
-
-
 
 static int dns_query(const char *host, uint16_t port, int family, int socktype, struct sockaddr *addr,
               socklen_t *addrlen)
@@ -79,12 +78,22 @@ static void client_init(struct mqtt_client *client, struct sockaddr *addr)
 	//broker = addr;
 	/* MQTT client configuration */
 	//client->broker = &broker;
+
+
+
+	username.utf8 = mqtt_sett.user;
+	username.size = strlen(mqtt_sett.user);
+
+	password.utf8 = mqtt_sett.pass;
+	password.size = strlen(mqtt_sett.pass);
+
 	client->broker = addr;
 	client->evt_cb = mqtt_evt_handler;
-	client->client_id.utf8 = (uint8_t *)MQTT_CLIENTID;
-	client->client_id.size = strlen(MQTT_CLIENTID);
-	client->password = NULL;
-	client->user_name = NULL;
+	client->client_id.utf8 = (uint8_t *)ha_mqtt_get_device_id();
+	client->client_id.size = strlen(ha_mqtt_get_device_id());
+	client->password = &password;
+	client->user_name = &username;
+
 #if defined(CONFIG_MQTT_VERSION_5_0)
 	client->protocol_version = MQTT_VERSION_5_0;
 #else
@@ -140,6 +149,9 @@ static void client_init(struct mqtt_client *client, struct sockaddr *addr)
 			      sizeof(struct sockaddr_in) :
 			      sizeof(struct sockaddr_in6));
 #endif
+
+	client->keepalive = 30;
+	client->clean_session = 1;
 }
 
 static void mqtt_task(void *a, void *b, void *c) {
@@ -150,43 +162,66 @@ static void mqtt_task(void *a, void *b, void *c) {
 
     int family = AF_INET;
     char *family_str = family == AF_INET ? "IPv4" : "IPv6";
-    struct sntp_time s_time;
-    struct sntp_ctx ctx;
     struct sockaddr addr;
     socklen_t addrlen;
     int rv;
+	int mqtt_subscrabed = 0;
 
-    #define PUB_PERIOD_MS 5000
+    #define PUB_PERIOD_MS 100
 
     static uint64_t next_pub_ms;
 
 
     while (1) {
-        /* Get SNTP server */
-        rv = dns_query("test.mosquitto.org", 1883, family, SOCK_DGRAM, &addr, &addrlen);
+
+        rv = dns_query(mqtt_sett.host, mqtt_sett.port, family, SOCK_DGRAM, &addr, &addrlen);
         if (rv != 0) {
-            LOG_ERR("Failed to lookup %s MQTT server (%d)", family_str, rv);
+            LOG_ERR("Failed to lookup %s MQTT server ", family_str);
             LOG_ERR("DNS query failed (%d)", rv);
             LOG_ERR("Waiting 10s and retry");
         }else {
         	client_init(&client_ctx, &addr);
-            LOG_INF("MQTT server: %s", inet_ntoa(net_sin(&addr)->sin_addr));
+            LOG_INF("MQTT server: %s port: %d", inet_ntoa(net_sin(&addr)->sin_addr), mqtt_sett.port);
         	int rc = mqtt_connect(&client_ctx);
 
         	if (rc != 0) {
-        		LOG_ERR("MQTT conection fail, err: ", rc);
+        		LOG_ERR("MQTT conection fail, err: %d", rc);
         	    LOG_ERR("Wait 10s and retry");
         		k_sleep(K_SECONDS(10));
         		continue;
         	}
-            LOG_INF("MQTT connected ");
+            LOG_INF("MQTT TCP sesion connected ");
 
             mqtt_status_msg_t mqtt_conn_status = {
                 0,
                 true,
-                true
+                false
             };
             zbus_chan_pub(&mqtt_stat_zbus_topik, &mqtt_conn_status, K_NO_WAIT);
+
+        	for (int i = 0; i < 100; i++) {
+
+				LOG_INF("Waiting initial connection. Iteration : %d", i);
+        		rc = mqtt_input(&client_ctx);
+        		if (rc != 0 && rc != -EAGAIN) {
+        			LOG_ERR("mqtt_input rc=%d", rc);
+        			break;
+        		}
+
+        		rc = mqtt_live(&client_ctx);
+        		if (rc != 0 && rc != -EAGAIN) {
+        			LOG_ERR("mqtt_live rc=%d", rc);
+        			break;
+        		}
+        		k_sleep(K_SECONDS(1));
+
+        		zbus_chan_read(&mqtt_stat_zbus_topik, &mqtt_conn_status,K_NO_WAIT);
+        		if (mqtt_conn_status.connected) break;
+        	}
+
+
+        	mqtt_subscrabed = 0;
+
         	while (1) {
 
         		rc = mqtt_input(&client_ctx);
@@ -207,41 +242,27 @@ static void mqtt_task(void *a, void *b, void *c) {
         	        break;
         	    }
 
+        		if (mqtt_subscrabed) {
 
+        			struct mqtt_publish_param pub;
+        			int pub_rc = ha_send_data_from_q_to_mqtt(&client_ctx, &pub);
+        			LOG_INF("MQTT publish rc=%d", pub_rc);
 
+        		}else {
 
-        	    /* простая периодика без drift’а: next += period */
-        	    int64_t now = k_uptime_get();
-        	    if (mqtt_conn_status.connected && now >= next_pub_ms) {
+        			if (ha_mqtt_init() < 0) {
+        				LOG_ERR("ha_mqtt_init failed");
+        				mqtt_disconnect(&client_ctx, NULL);
+        			}
 
-        	        struct mqtt_publish_param pub;
-
-                    pub.message.topic.topic.utf8 = (uint8_t*)"zephyr/kshypachov";
-        	        pub.message.topic.topic.size = strlen("zephyr/kshypachov");
-        	        pub.message.topic.qos = MQTT_QOS_2_EXACTLY_ONCE;
-        	        pub.message.payload.data = (uint8_t*)"OK";
-        	        pub.message.payload.len = strlen("OK");
-        	        pub.message_id = sys_rand16_get();
-        	        pub.dup_flag = false;
-        	        pub.retain_flag = false;
-
-
-
-        	        int pub_rc = mqtt_publish(&client_ctx, &pub);
-        	        if (pub_rc != 0)
-        	        {
-        	            LOG_ERR("MQTT publish rc=%d", pub_rc);
-        	        }else
-        	        {
-        	            LOG_INF("MQTT publish success rc=%d", pub_rc);
-        	        }
-        	        /* без накопления дрейфа: добавляем фиксированный период */
-        	        next_pub_ms += PUB_PERIOD_MS;
-        	        /* если отстали (долго обрабатывали), догоняем ближайший дедлайн */
-        	        if (now - next_pub_ms > PUB_PERIOD_MS) {
-        	            next_pub_ms = now + PUB_PERIOD_MS;
-        	        }
-        	    }
+        			if (ha_mqtt_subscribe_topiks(&client_ctx) < 0) {
+        				LOG_ERR("ha_mqtt_subscribe_topiks failed");
+        				mqtt_disconnect(&client_ctx, NULL);
+        			}else {
+        				LOG_INF("MQTT subscribe success!");
+        				mqtt_subscrabed = 1;
+        			}
+        		}
 
         		k_sleep(K_MSEC(100)); /* 10 Гц: достаточно, чтобы не пропускать keepalive и события */
         	}
@@ -249,7 +270,7 @@ static void mqtt_task(void *a, void *b, void *c) {
         }
         k_sleep(K_SECONDS(10));
     }
-	return 0;
+	return;
 }
 
 void app_mqtt_ha_client_init(void) {
@@ -258,7 +279,7 @@ void app_mqtt_ha_client_init(void) {
 	settings_load_one(mqtt_enabled_settings, &mqtt_sett.enabled, sizeof(mqtt_sett.enabled));
 	settings_load_one(mqtt_host_settings, mqtt_sett.host, sizeof(mqtt_sett.host));
 	settings_load_one(mqtt_user_settings, mqtt_sett.user, sizeof(mqtt_sett.user));
-	settings_load_one(mqtt_pass_settings, mqtt_sett.pass, sizeof(mqtt_sett.enabled));
+	settings_load_one(mqtt_pass_settings, mqtt_sett.pass, sizeof(mqtt_sett.pass));
 
 	if (mqtt_sett.enabled) {
 
@@ -272,5 +293,7 @@ void app_mqtt_ha_client_init(void) {
 		                          K_NO_WAIT);
 
 		k_thread_name_set(tid, "mqtt_task_ha");
+
+		start_ha_mqtt_task();
 	}
 }

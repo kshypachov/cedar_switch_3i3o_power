@@ -9,6 +9,7 @@ target_sources(app PRIVATE
         src/test_functions.c # to delete
         src/littlefs/filesystem_helpers.c
         src/zbus_topics.c
+        src/msgq_topiks.c
         src/web/http_common.c
         src/web/REST_endpoints/settings_status.c
         src/web/REST_endpoints/default_relay_state.c
@@ -20,9 +21,11 @@ target_sources(app PRIVATE
         src/web/REST_endpoints/webui_upload.c
         src/web/static_resources.c
         src/web/http_server_init.c
-        src/mqtt/mqtt_ha.c
-        src/mqtt/mqtt_callback.c
-        src/mqtt/mqtt_helpers.c
+        src/mqtt/ha_mqtt.c
+        src/mqtt/ha_mqtt_callback.c
+        src/mqtt/ha_mqtt_helpers.c
+        src/mqtt/ha_mqtt_adapter.c
+        src/mqtt/ha_task.c
         src/littlefs/littlefs_mount.c
         src/io/io.c
 #        src/io.c

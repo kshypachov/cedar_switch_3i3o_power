@@ -15,11 +15,16 @@
 #include "../zbus_topics.h"
 #include "../settings_topics.h"
 
+
 LOG_MODULE_REGISTER(io);
 
 /* Стек для нового потока */
 #define IO_TASK_STACK_SIZE 2048
 #define IO_TASK_PRIORITY   2
+
+#define RELAY1_NODE DT_ALIAS(relay1)
+#define RELAY2_NODE DT_ALIAS(relay2)
+#define RELAY3_NODE DT_ALIAS(relay3)
 
 K_THREAD_STACK_DEFINE(io_task_stack, IO_TASK_STACK_SIZE);
 static struct k_thread io_task_thread_data;
@@ -28,16 +33,18 @@ relays_def_state relays_default_state;
 
 
 
+
 /* ====== DT relays (gpio-leds children) ====== */
-static const struct gpio_dt_spec relay1 = GPIO_DT_SPEC_GET(DT_NODELABEL(relay1), gpios);
-static const struct gpio_dt_spec relay2 = GPIO_DT_SPEC_GET(DT_NODELABEL(relay2), gpios);
-static const struct gpio_dt_spec relay3 = GPIO_DT_SPEC_GET(DT_NODELABEL(relay3), gpios);
+static const struct gpio_dt_spec relay1 = GPIO_DT_SPEC_GET(RELAY1_NODE, gpios);
+static const struct gpio_dt_spec relay2 = GPIO_DT_SPEC_GET(RELAY2_NODE, gpios);
+static const struct gpio_dt_spec relay3 = GPIO_DT_SPEC_GET(RELAY3_NODE, gpios);
+//static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(RELAY1_NODE, gpios);
 
 
 static void write_relays_once(uint8_t state) {
-    gpio_pin_set_dt(&relay1, state & 1);
-    gpio_pin_set_dt(&relay2, state & 2);
-    gpio_pin_set_dt(&relay3, state & 4);
+    gpio_pin_set_dt(&relay1, (state & 1)? 1 : 0);
+    gpio_pin_set_dt(&relay2, (state & 2)? 1 : 0);
+    gpio_pin_set_dt(&relay3, (state & 4)? 1 : 0);
 }
 
 void io_task(void *a, void *b, void *c) {
@@ -51,6 +58,7 @@ void io_task(void *a, void *b, void *c) {
         /* Порт не готов – нечего делать */
         return;
     }
+
     (void)gpio_pin_configure_dt(&relay1, GPIO_OUTPUT_INACTIVE);
     (void)gpio_pin_configure_dt(&relay2, GPIO_OUTPUT_INACTIVE);
     (void)gpio_pin_configure_dt(&relay3, GPIO_OUTPUT_INACTIVE);

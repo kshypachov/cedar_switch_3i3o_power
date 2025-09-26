@@ -17,7 +17,7 @@
 #include <zephyr/version.h>
 
 #include "web/http_server_init.h"
-#include "mqtt/mqtt_ha.h"
+#include "mqtt/ha_mqtt.h"
 #include "io/io.h"
 #include "littlefs/littlefs_mount.h"
 
@@ -161,7 +161,7 @@ int main(void)
 
 	LOG_INF("Start main app");
 
-	int usb_ret = usb_enable(NULL);
+	//int usb_ret = usb_enable(NULL);
 	if (!gpio_is_ready_dt(&led)) {
 		LOG_ERR("Error: LED device is not ready\n");
 		return;

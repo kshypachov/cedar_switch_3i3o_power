@@ -15,9 +15,10 @@
 
 LOG_MODULE_REGISTER(REST_API_mqtt_settings);
 
-static void app_settings_mqtt_update(mqtt_settings_t mqtt) {
+static void app_settings_mqtt_update(mqtt_settings_t const mqtt) {
     settings_save_one(mqtt_enabled_settings, &mqtt.enabled, sizeof(mqtt.enabled));
     settings_save_one(mqtt_host_settings, mqtt.host, sizeof(mqtt.host));
+    settings_save_one(mqtt_port_settings, &mqtt.port, sizeof(mqtt.port));
     settings_save_one(mqtt_user_settings, mqtt.user, sizeof(mqtt.user));
     settings_save_one(mqtt_pass_settings, mqtt.pass, sizeof(mqtt.pass));
 }
@@ -27,6 +28,7 @@ static void app_settings_mqtt_load(mqtt_settings_t *mqtt) {
     memset(mqtt, 0, sizeof(*mqtt));
     settings_load_one(mqtt_enabled_settings, &mqtt->enabled, sizeof(mqtt->enabled));
     settings_load_one(mqtt_host_settings,   mqtt->host, sizeof(mqtt->host));
+    settings_load_one(mqtt_port_settings,   &mqtt->port, sizeof(mqtt->port));
     settings_load_one(mqtt_user_settings,   mqtt->user, sizeof(mqtt->user));
     settings_load_one(mqtt_pass_settings,   mqtt->pass, sizeof(mqtt->pass));
 }
@@ -34,6 +36,7 @@ static void app_settings_mqtt_load(mqtt_settings_t *mqtt) {
 static const struct json_obj_descr mqtt_settings_descr[] = {
     JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "enabled", enabled, JSON_TOK_TRUE),
     JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "host", host, JSON_TOK_STRING_BUF),
+    JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "port", port, JSON_TOK_INT),
     JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "user", user, JSON_TOK_STRING_BUF),
     JSON_OBJ_DESCR_PRIM_NAMED(mqtt_settings_t, "pass", pass, JSON_TOK_STRING_BUF),
 };
@@ -58,6 +61,7 @@ static int settings_mqtt_handler(struct http_client_ctx *client,
 
             settings_load_one(mqtt_enabled_settings, &mqtt_sett.enabled, sizeof(mqtt_sett.enabled));
             settings_load_one(mqtt_host_settings, mqtt_sett.host, sizeof(mqtt_sett.host));
+            settings_load_one(mqtt_port_settings, &mqtt_sett.port, sizeof(mqtt_sett.port));
             settings_load_one(mqtt_user_settings, mqtt_sett.user, sizeof(mqtt_sett.user));
             settings_load_one(mqtt_pass_settings, mqtt_sett.pass, sizeof(mqtt_sett.pass));
 
@@ -66,10 +70,12 @@ static int settings_mqtt_handler(struct http_client_ctx *client,
             int n = snprintk(resp_buf, sizeof(resp_buf),
                              "{\"enabled\": %s, "
                              "\"host\": \"%s\", "
+                             "\"port\": %d, "
                              "\"user\": \"%s\", "
                              "\"pass\": \"%s\"}",
                              mqtt_sett.enabled ? "true" : "false",
                              mqtt_sett.host,
+                             mqtt_sett.port,
                              mqtt_sett.user,
                              strlen(mqtt_sett.user) ? "*****" : "");
 
@@ -132,10 +138,12 @@ static int settings_mqtt_handler(struct http_client_ctx *client,
             int n = snprintk(resp_buf, sizeof(resp_buf),
                              "{\"enabled\": %s, "
                              "\"host\": \"%s\", "
+                             "\"port\": %d, "
                              "\"user\": \"%s\", "
                              "\"pass\": \"%s\"}",
                              tmp.enabled ? "true" : "false",
                              tmp.host ,
+                             tmp.port,
                              tmp.user,
                              strlen(tmp.pass) ? "****" : "");
 
