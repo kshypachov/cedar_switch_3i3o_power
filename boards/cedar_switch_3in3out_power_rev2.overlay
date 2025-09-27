@@ -1,5 +1,5 @@
 &rtc {
-	status = "disabled";
+	status = "okay";
 };
 
 //&clk_hse {
