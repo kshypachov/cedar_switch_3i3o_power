@@ -123,13 +123,13 @@
 	status = "okay";
 };
 
-//&plli2s {
-//	status = "disabled";
-//	div-m = <4>;
-//	mul-n = <96>;
-//	div-q = <4>;
-//	div-r = <6>;
-//};
+&plli2s {
+	status = "okay";
+	div-m = <4>;
+	mul-n = <96>;
+	div-q = <4>;
+	div-r = <6>;
+};
 
 &rcc {
 	status = "okay";
@@ -141,14 +141,18 @@
 };
 
 
-//&clk48 {
-//	compatible = "st,stm32-clock-mux";
-//	clocks = <&rcc STM32_SRC_PLLI2S_Q CK48M_SEL(1)>;
-//	status = "disabled";
-//};
+&clk48 {
+	compatible = "st,stm32-clock-mux";
+	clocks = <&rcc STM32_SRC_PLLI2S_Q CK48M_SEL(1)>;
+	status = "okay";
+};
 
 &rtc {
 	clocks = <&rcc STM32_SRC_LSE RTC_SEL(1)>;
+	status = "okay";
+};
+
+&rng {
 	status = "okay";
 };
 
