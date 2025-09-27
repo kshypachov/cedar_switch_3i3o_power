@@ -15,6 +15,7 @@
 #include <zephyr/net/ethernet_mgmt.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/version.h>
+#include <zephyr/drivers/entropy.h>
 
 #include "web/http_server_init.h"
 #include "mqtt/ha_mqtt.h"
@@ -193,6 +194,13 @@ int main(void)
 		printk("Flash device not ready\n");
 		return;
 	}
+
+    /* Получаем устройство энтропии, выбранное devicetree (chosen: zephyr,entropy) */
+    const struct device *entropy = DEVICE_DT_GET(DT_CHOSEN(zephyr_entropy));
+    if (!device_is_ready(entropy)) {
+        LOG_ERR("Entropy device is not ready! Check your Kconfig/DTS.");
+        return;
+    }
 
 	//(void)erase_partition_by_id(LFS_PART_ID);
 	//(void)erase_partition_by_id(NVS_PART_ID);
