@@ -12,12 +12,13 @@
 #include <zephyr/logging/log.h>
 #include "../http_common.h"
 #include "../../settings_topics.h"
+#include "../authentication.h"
 
 LOG_MODULE_REGISTER(REST_API_default_relay_state);
 
 
 static void app_settings_def_relay_state_update(relays_def_state state) {
-    int err = 0;
+
     settings_save_one(def_relays_state_enable_settings_topik, &state.enabled, sizeof(state.enabled));
     settings_save_one(def_relays1_state_settings_topik, &state.relay1, sizeof(state.relay1));
     settings_save_one(def_relays2_state_settings_topik, &state.relay2, sizeof(state.relay2));
@@ -46,10 +47,11 @@ static int settings_def_relay_state_handler(struct http_client_ctx *client,
     static char resp_buf[256] = "\0";
     static char post_request_buff [256] = "\0";
     static size_t cursor;
-
+    //authentication(headers, header_count, )
     //if (status == HTTP_SERVER_DATA_FINAL) {
 
         if (client->method == HTTP_GET) {
+
             if (status == HTTP_SERVER_DATA_FINAL) {
 
                 relays_def_state relays_def = {0};
@@ -60,7 +62,7 @@ static int settings_def_relay_state_handler(struct http_client_ctx *client,
                 settings_load_one(def_relays3_state_settings_topik, &relays_def.relay3, sizeof(relays_def.relay3));
 
                 /* Формируем JSON строку */
-                int n = snprintk(resp_buf, sizeof(resp_buf),
+                snprintk(resp_buf, sizeof(resp_buf),
                                  "{\"enabled\": %s, "
                                  "\"relay1\": %s, "
                                  "\"relay2\": %s, "
