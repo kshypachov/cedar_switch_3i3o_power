@@ -41,7 +41,7 @@ static int mkdir_web_ui_handler(struct http_client_ctx *client,
 {
     ARG_UNUSED(user_data);
 
-    static char resp_buf[256] = "\0";
+//    static char resp_buf[256] = "\0";
     static char post_request_buff [256] = "\0";
     static size_t cursor;
 
