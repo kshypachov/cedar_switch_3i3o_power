@@ -16,97 +16,97 @@
 
 LOG_MODULE_REGISTER(test_functions);
 
-static int join_path(char *out, size_t out_sz, const char *base, const char *name)
-{
-    int n = snprintf(out, out_sz, "%s/%s", base, name);
-    if (n < 0 || (size_t)n >= out_sz) {
-        return -ENAMETOOLONG;
-    }
-    return 0;
-}
+// static int join_path(char *out, size_t out_sz, const char *base, const char *name)
+// {
+//     int n = snprintf(out, out_sz, "%s/%s", base, name);
+//     if (n < 0 || (size_t)n >= out_sz) {
+//         return -ENAMETOOLONG;
+//     }
+//     return 0;
+// }
 
-static int fs_delete_tree(const char *path)
-{
-    int rc;
-    struct fs_dir_t dir;
-    struct fs_dirent ent;
-
-    if (!path || !*path) {
-        return -EINVAL;
-    }
-    fs_dir_t_init(&dir);
-
-    /* Попробуем открыть как каталог. Если это файл — просто удалить. */
-    rc = fs_opendir(&dir, path);
-    if (rc < 0) {
-        /* Не каталог? — пробуем удалить как файл */
-        rc = fs_unlink(path);
-        return rc;
-    }
-
-    /* Это каталог: обходим содержимое */
-    for (;;) {
-        rc = fs_readdir(&dir, &ent);
-        if (rc < 0) {
-            fs_closedir(&dir);
-            return rc;
-        }
-        if (ent.name[0] == 0) {
-            /* конец каталога */
-            break;
-        }
-
-        /* Zephyr обычно не возвращает "." и "..", но на всякий случай: */
-        if ((strcmp(ent.name, ".") == 0) || (strcmp(ent.name, "..") == 0)) {
-            continue;
-        }
-
-        char child[PATH_MAX];
-        rc = join_path(child, sizeof(child), path, ent.name);
-        if (rc < 0) {
-            fs_closedir(&dir);
-            return rc;
-        }
-
-        if (ent.type == FS_DIR_ENTRY_DIR) {
-            /* рекурсивно удалить подкаталог, затем rmdir */
-            fs_closedir(&dir);
-            rc = fs_delete_tree(child);
-
-            fs_dir_t_init(&dir);
-            fs_opendir(&dir, path);
-
-            if (rc < 0) {
-                fs_closedir(&dir);
-                return rc;
-            }
-            rc = fs_unlink(path);
-            if (rc < 0) {
-                fs_closedir(&dir);
-                return rc;
-            }
-        } else if (ent.type == FS_DIR_ENTRY_FILE) {
-            rc = fs_unlink(child);
-            if (rc < 0) {
-                fs_closedir(&dir);
-                return rc;
-            }
-        } else {
-            /* На всякий случай: неизвестный тип — пробуем удалить как файл */
-            rc = fs_unlink(child);
-            if (rc < 0) {
-                fs_closedir(&dir);
-                return rc;
-            }
-        }
-    }
-
-    fs_closedir(&dir);
-
-    /* После очистки содержимого — удалить сам каталог (вызовите отдельно при необходимости) */
-    rc = fs_unlink(path);
-    return rc;
-}
+// static int fs_delete_tree(const char *path)
+// {
+//     int rc;
+//     struct fs_dir_t dir;
+//     struct fs_dirent ent;
+//
+//     if (!path || !*path) {
+//         return -EINVAL;
+//     }
+//     fs_dir_t_init(&dir);
+//
+//     /* Попробуем открыть как каталог. Если это файл — просто удалить. */
+//     rc = fs_opendir(&dir, path);
+//     if (rc < 0) {
+//         /* Не каталог? — пробуем удалить как файл */
+//         rc = fs_unlink(path);
+//         return rc;
+//     }
+//
+//     /* Это каталог: обходим содержимое */
+//     for (;;) {
+//         rc = fs_readdir(&dir, &ent);
+//         if (rc < 0) {
+//             fs_closedir(&dir);
+//             return rc;
+//         }
+//         if (ent.name[0] == 0) {
+//             /* конец каталога */
+//             break;
+//         }
+//
+//         /* Zephyr обычно не возвращает "." и "..", но на всякий случай: */
+//         if ((strcmp(ent.name, ".") == 0) || (strcmp(ent.name, "..") == 0)) {
+//             continue;
+//         }
+//
+//         char child[PATH_MAX];
+//         rc = join_path(child, sizeof(child), path, ent.name);
+//         if (rc < 0) {
+//             fs_closedir(&dir);
+//             return rc;
+//         }
+//
+//         if (ent.type == FS_DIR_ENTRY_DIR) {
+//             /* рекурсивно удалить подкаталог, затем rmdir */
+//             fs_closedir(&dir);
+//             rc = fs_delete_tree(child);
+//
+//             fs_dir_t_init(&dir);
+//             fs_opendir(&dir, path);
+//
+//             if (rc < 0) {
+//                 fs_closedir(&dir);
+//                 return rc;
+//             }
+//             rc = fs_unlink(path);
+//             if (rc < 0) {
+//                 fs_closedir(&dir);
+//                 return rc;
+//             }
+//         } else if (ent.type == FS_DIR_ENTRY_FILE) {
+//             rc = fs_unlink(child);
+//             if (rc < 0) {
+//                 fs_closedir(&dir);
+//                 return rc;
+//             }
+//         } else {
+//             /* На всякий случай: неизвестный тип — пробуем удалить как файл */
+//             rc = fs_unlink(child);
+//             if (rc < 0) {
+//                 fs_closedir(&dir);
+//                 return rc;
+//             }
+//         }
+//     }
+//
+//     fs_closedir(&dir);
+//
+//     /* После очистки содержимого — удалить сам каталог (вызовите отдельно при необходимости) */
+//     rc = fs_unlink(path);
+//     return rc;
+// }
 
 
 int create_index_html(void)
