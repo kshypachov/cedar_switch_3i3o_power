@@ -19,7 +19,7 @@
 LOG_MODULE_REGISTER(io);
 
 /* Стек для нового потока */
-#define IO_TASK_STACK_SIZE 2048
+#define IO_TASK_STACK_SIZE 1024
 #define IO_TASK_PRIORITY   2
 
 #define RELAY1_NODE DT_ALIAS(relay1)
