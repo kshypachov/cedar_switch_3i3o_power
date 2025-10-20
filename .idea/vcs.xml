@@ -4,6 +4,7 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../bootloader/mcuboot" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../modules/bsim_hw_models/nrf_hw_models" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../modules/crypto/mbedtls" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../modules/crypto/tinycrypt" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../modules/debug/mipi-sys-t" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../modules/fs/littlefs" vcs="Git" />
