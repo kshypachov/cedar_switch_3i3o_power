@@ -82,13 +82,12 @@ static int relays_state_handler(struct http_client_ctx *client,
                 return 0;
             }
             response_ctx->status = HTTP_200_OK;
-            response_ctx->body = (uint8_t *)resp_buf;
+            response_ctx->body = (uint8_t *) resp_buf;
             response_ctx->body_len = strlen(resp_buf);
             response_ctx->final_chunk = true;
 
             return 0;
         }
-
     }else if (client->method == HTTP_POST) {
 
         if (status == HTTP_SERVER_DATA_ABORTED) {
@@ -145,7 +144,7 @@ static int relays_state_handler(struct http_client_ctx *client,
 
         return -1;
     }
-
+return 0;
 }
 
 
