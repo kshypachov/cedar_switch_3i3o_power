@@ -14,8 +14,12 @@
 #include <zephyr/storage/flash_map.h>
 #include <zephyr/net/ethernet_mgmt.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/version.h>
+//#include <zephyr/version.h>
 #include <zephyr/drivers/entropy.h>
+#include <zephyr/net/net_config.h>
+#include <zephyr/logging/log_backend.h>
+#include <zephyr/logging/log_backend_net.h>
+#include <zephyr/logging/log_ctrl.h>
 
 #include "web/http_server_init.h"
 #include "mqtt/ha_mqtt.h"
@@ -23,14 +27,10 @@
 #include "littlefs/littlefs_mount.h"
 
 
-#include <zephyr/logging/log_backend.h>
-#include <zephyr/logging/log_backend_net.h>
-#include <zephyr/logging/log_ctrl.h>
-
 #include "test_functions.h"
+#include  "diagnostic/diag_report.h"
 
-
-LOG_MODULE_REGISTER(main_app, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(main_app);
 
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS   1000
@@ -77,6 +77,7 @@ static void ipv4_addr_add_handler(struct net_mgmt_event_callback *cb,
 	//home_assistant_mqtt_start();
 
 	const struct log_backend *backend = log_backend_net_get();
+
 	if (!log_backend_is_active(backend)) {
 
 		/* Specifying an address by calling this function will
@@ -85,14 +86,15 @@ static void ipv4_addr_add_handler(struct net_mgmt_event_callback *cb,
 		   is started. The net context will be released and
 		   restarted with the newly specified address.
 		 */
-		log_backend_net_set_addr("192.168.88.182:514");
-		log_backend_init(backend);
-		log_backend_enable(backend, backend->cb->ctx, LOG_LEVEL_DBG);
-		log_backend_net_start();
+		//log_backend_net_set_addr("192.168.88.182:514");
+		//log_backend_init(backend);
+		//log_backend_enable(backend, backend->cb->ctx, LOG_LEVEL_DBG);
+		//log_backend_net_start();
 	}
 
 	app_http_server_init();
 	app_mqtt_ha_client_init();
+	//net_diag_start_periodic(K_SECONDS(5));
 
 
 	if (mgmt_event != NET_EVENT_IPV4_ADDR_ADD) {
@@ -165,20 +167,20 @@ int main(void)
 	//int usb_ret = usb_enable(NULL);
 	if (!gpio_is_ready_dt(&led)) {
 		LOG_ERR("Error: LED device is not ready\n");
-		return;
+		return 0;
 	}
 
 	ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
 		LOG_ERR("Error %d: failed to configure LED\n", ret);
-		return;
+		return 0;
 	}
 
 	const struct device *flash = DEVICE_DT_GET(FLASH_NODE);
 
 	if (!device_is_ready(flash)) {
 		LOG_ERR("SPI_FLASH not ready (probe failed or disabled)");
-		return;
+		return 0;
 	}
 
 	const struct flash_parameters *p = flash_get_parameters(flash);
@@ -192,18 +194,18 @@ int main(void)
 	const struct device *flash_dev = DEVICE_DT_GET(DT_NODELABEL(spi_flash));
 	if (!device_is_ready(flash_dev)) {
 		printk("Flash device not ready\n");
-		return;
+		return 0;
 	}
 
     /* Получаем устройство энтропии, выбранное devicetree (chosen: zephyr,entropy) */
     const struct device *entropy = DEVICE_DT_GET(DT_CHOSEN(zephyr_entropy));
     if (!device_is_ready(entropy)) {
         LOG_ERR("Entropy device is not ready! Check your Kconfig/DTS.");
-        return;
+        return 0;
     }
 
-	//(void)erase_partition_by_id(LFS_PART_ID);
-	//(void)erase_partition_by_id(NVS_PART_ID);
+//	(void)erase_partition_by_id(LFS_PART_ID);
+//	(void)erase_partition_by_id(NVS_PART_ID);
 
 	// struct flash_pages_info info;
 	// if (flash_get_page_info_by_offs(flash_dev, 0, &info) == 0) {
@@ -242,6 +244,12 @@ int main(void)
 
 
 	if (iface) {
+		struct ethernet_req_params mac_params = {
+			.mac_address.addr = { 0x02, 0x00, 0x00, 0x12, 0x34, 0x56 }
+		};
+
+		net_if_down(iface);
+		ret = net_mgmt(NET_REQUEST_ETHERNET_SET_MAC_ADDRESS, iface, &mac_params, sizeof(struct ethernet_req_params));
 		net_if_up(iface); /* DHCP стартует автоматически при CONFIG_NET_DHCPV4=y */
 		(void)net_dhcpv4_start(iface);    // ЯВНО запустить DHCP
 		LOG_INF("Network interface up");
@@ -265,7 +273,7 @@ int main(void)
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
 			printk("Error %d: failed to toggle LED\n", ret);
-			return;
+			return 0;
 		}
 
 		k_msleep(SLEEP_TIME_MS);
