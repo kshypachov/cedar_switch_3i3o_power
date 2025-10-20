@@ -19,6 +19,8 @@ target_sources(app PRIVATE
         src/web/REST_endpoints/webui_delete.c
         src/web/REST_endpoints/webui_mkdir.c
         src/web/REST_endpoints/webui_upload.c
+        src/web/REST_endpoints/login.c
+        src/web/REST_endpoints/web_user_mgmt.c
         src/web/static_resources.c
         src/web/http_server_init.c
         src/mqtt/ha_mqtt.c
@@ -28,6 +30,8 @@ target_sources(app PRIVATE
         src/mqtt/ha_task.c
         src/littlefs/littlefs_mount.c
         src/io/io.c
+        src/web/authentication.c
+        #src/diagnostic/diag_report.c
 #        src/io.c
 #        src/fs_mount.c
 #        src/nvs_mount.c
