@@ -95,12 +95,12 @@ void ha_mqtt_task(void *p1, void *p2, void *p3) {
         ha_mqtt_init();
         //wait opening mqtt connection
         do {
-            LOG_INF("Wait mqtt connection");
+            LOG_INF("Wait 2 seconds for mqtt connection");
+            k_sleep(K_SECONDS(2));
             zbus_chan_read(&mqtt_stat_zbus_topik, &mqtt_ha_status, K_NO_WAIT);
-            k_sleep(K_SECONDS(5));
         }while (!mqtt_ha_status.connected);
 
-        k_sleep(K_SECONDS(10));
+        //k_sleep(K_SECONDS(10));
 
         LOG_INF("MQTT connected");
         LOG_INF("Start register device in HA");
@@ -171,9 +171,7 @@ void ha_mqtt_task(void *p1, void *p2, void *p3) {
                     }
                 }
                 inputs_state_old = inputs_state;
-
             }
-
 
             //write parsing message from MQTT message Q to io zbus
             if ((k_msgq_num_used_get(&MQTT_MSGQ_RX) > 0) && (k_msgq_get(&MQTT_MSGQ_RX, &mqtt_message, K_NO_WAIT) == 0 )) {

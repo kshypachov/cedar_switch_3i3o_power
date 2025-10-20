@@ -73,7 +73,7 @@ static int get_default_iface_ip_str(char *out_buf, size_t out_len)
 
 #if defined(CONFIG_NET_IPV6)
     /* если IPv4 нет — пробуем глобальный IPv6 (preferred) */
-    const struct in6_addr *v6 = net_if_ipv6_get_global_addr(iface, NET_ADDR_PREFERRED);
+    const struct in6_addr *v6 = net_if_ipv6_get_global_addr(NET_ADDR_PREFERRED, iface );
     if (v6) {
         if (!net_addr_ntop(AF_INET6, v6, out_buf, out_len)) {
             return -EINVAL;

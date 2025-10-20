@@ -351,7 +351,7 @@ static int get_sensor_state_from_str(const char * sensor_state_str, uint8_t * st
 int parse_incoming_message (const char * payload, size_t payload_size, const char * topic, size_t topic_size, mqtt_ha_dev_type_t * dev_type, uint8_t * sensor_number, uint8_t * state_num) {
 
 	char devtype_str[32];
-	char json_key[32];
+//	char json_key[32];
 	char state_str[8];
 	char index_str[8];
 	int consumed = 0;
@@ -397,7 +397,7 @@ int parse_incoming_message (const char * payload, size_t payload_size, const cha
 	// }
 
 	if (get_sensor_type_from_str(devtype_str, dev_type) != 0) {
-		LOG_ERR("Parsing device type &s is unsucces", payload);
+		LOG_ERR("Parsing device type %s is unsucces", payload);
 		return -1;
 	}
 
