@@ -40,6 +40,8 @@ static struct mqtt_client client_ctx;
 static uint8_t rx_buffer[APP_MQTT_BUFFER_SIZE];
 static uint8_t tx_buffer[APP_MQTT_BUFFER_SIZE];
 
+#define SEC_TAG_SERVER_PIN  42
+
 static int dns_query(const char *host, uint16_t port, int family, int socktype, struct sockaddr *addr,
               socklen_t *addrlen)
 {
@@ -78,8 +80,7 @@ static void client_init(struct mqtt_client *client, struct sockaddr *addr)
 	//broker = addr;
 	/* MQTT client configuration */
 	//client->broker = &broker;
-
-
+	struct mqtt_sec_config *tls_config = &client->transport.tls.config;
 
 	username.utf8 = mqtt_sett.user;
 	username.size = strlen(mqtt_sett.user);
@@ -93,12 +94,7 @@ static void client_init(struct mqtt_client *client, struct sockaddr *addr)
 	client->client_id.size = strlen(ha_mqtt_get_device_id());
 	client->password = &password;
 	client->user_name = &username;
-
-#if defined(CONFIG_MQTT_VERSION_5_0)
-	client->protocol_version = MQTT_VERSION_5_0;
-#else
 	client->protocol_version = MQTT_VERSION_3_1_1;
-#endif
 
 	/* MQTT buffers configuration */
 	client->rx_buf = rx_buffer;
@@ -107,48 +103,15 @@ static void client_init(struct mqtt_client *client, struct sockaddr *addr)
 	client->tx_buf_size = sizeof(tx_buffer);
 
 	/* MQTT transport configuration */
-#if defined(CONFIG_MQTT_LIB_TLS)
-#if defined(CONFIG_MQTT_LIB_WEBSOCKET)
-	client->transport.type = MQTT_TRANSPORT_SECURE_WEBSOCKET;
-#else
 	client->transport.type = MQTT_TRANSPORT_SECURE;
-#endif
+	client->transport.tls.sock =
 
-	struct mqtt_sec_config *tls_config = &client->transport.tls.config;
-
-	tls_config->peer_verify = TLS_PEER_VERIFY_REQUIRED;
+	tls_config->peer_verify = TLS_PEER_VERIFY_NONE;
 	tls_config->cipher_list = NULL;
-	tls_config->sec_tag_list = m_sec_tags;
-	tls_config->sec_tag_count = ARRAY_SIZE(m_sec_tags);
-#if defined(MBEDTLS_X509_CRT_PARSE_C) || defined(CONFIG_NET_SOCKETS_OFFLOAD)
-	tls_config->hostname = TLS_SNI_HOSTNAME;
-#else
+	tls_config->sec_tag_list = NULL;
+	tls_config->sec_tag_count = 0;
 	tls_config->hostname = NULL;
-#endif
-
-#else
-#if defined(CONFIG_MQTT_LIB_WEBSOCKET)
-	client->transport.type = MQTT_TRANSPORT_NON_SECURE_WEBSOCKET;
-#else
-	client->transport.type = MQTT_TRANSPORT_NON_SECURE;
-#endif
-#endif
-
-#if defined(CONFIG_MQTT_LIB_WEBSOCKET)
-	client->transport.websocket.config.host = SERVER_ADDR;
-	client->transport.websocket.config.url = "/mqtt";
-	client->transport.websocket.config.tmp_buf = temp_ws_rx_buf;
-	client->transport.websocket.config.tmp_buf_len =
-						sizeof(temp_ws_rx_buf);
-	client->transport.websocket.timeout = 5 * MSEC_PER_SEC;
-#endif
-
-#if defined(CONFIG_SOCKS)
-	mqtt_client_set_proxy(client, &socks5_proxy,
-			      socks5_proxy.sa_family == AF_INET ?
-			      sizeof(struct sockaddr_in) :
-			      sizeof(struct sockaddr_in6));
-#endif
+//	client->transport.tls.sock = zsock_socket(addr->sa_family, SOCK_STREAM, IPPROTO_TLS_1_2);
 
 	client->keepalive = 30;
 	client->clean_session = 1;
@@ -246,7 +209,7 @@ static void mqtt_task(void *a, void *b, void *c) {
 
         			struct mqtt_publish_param pub;
         			int pub_rc = ha_send_data_from_q_to_mqtt(&client_ctx, &pub);
-        			LOG_INF("MQTT publish rc=%d", pub_rc);
+        			//LOG_INF("MQTT publish rc=%d", pub_rc);
 
         		}else {
 
