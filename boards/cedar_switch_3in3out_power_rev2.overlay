@@ -63,7 +63,7 @@
 	status = "okay";
 	cs-gpios = <&gpioa 15 GPIO_ACTIVE_LOW>;  // CS для Flash
 
-	/* --- SPI NOR Flash MX25R6435F (64 Mbit = 8 MiB) --- */
+	/* --- SPI NOR Flash  (128 Mbit = 16 MiB) --- */
 	spi_flash: spi-nor@0 {
 		compatible = "jedec,spi-nor";
 		reg = <0>;
@@ -107,7 +107,7 @@
 		int-gpios = <&gpioa 10 GPIO_ACTIVE_LOW>;  // PA10
 		reset-gpios = <&gpioa 8 GPIO_ACTIVE_LOW>; // PA8
 		//local-mac-address = [00 04 A3 12 34 56];
-		zephyr,random-mac-address;
+		//zephyr,random-mac-address;
 	};
 };
 
@@ -127,11 +127,7 @@
 		display-offset = <0>;
 		multiplex-ratio = <63>;
 		prechargep = <2>;
-		//compins = <0x12>;
-		//col-offset = <0>;
 	};
-
-
 };
 
 / {
@@ -167,26 +163,6 @@
 			label = "INPUT3";
 		};
 	};
-
-//	gpio_relays {
-//		compatible = "gpio-leds";
-//		status = "okay";
-//
-//		relay1: relay1 {
-//			gpios = <&gpioa 5 GPIO_ACTIVE_LOW>;  // PA5
-//			label = "Relay 1";
-//		};
-//
-//		relay2: relay2 {
-//			gpios = <&gpioa 6 GPIO_ACTIVE_LOW>;  // PA6
-//			label = "Relay 2";
-//		};
-//
-//		relay3: relay3 {
-//			gpios = <&gpioa 7 GPIO_ACTIVE_LOW>;  // PA7
-//			label = "Relay 3";
-//		};
-//	};
 
 	chosen {
 		//zephyr,udc = &zephyr_udc0;          /* ваш FS контроллер */
